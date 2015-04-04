@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+    <!-- Node: -->
+    <property>
+        <name>node.readers</name>
+        <value>10</value>
+        <description>
+            The amount of active readers each Node will have.
+        </description>
+    </property>
+  
+    <!-- Reactor -->
+    <property>
+        <name>reactor.port</name>
+        <value>14999</value>
+        <description>
+            Port that the Reactor will listen on.
+        </description>
+    </property>
+</configuration>

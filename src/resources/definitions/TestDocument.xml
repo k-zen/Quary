@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (c) 2015, Andreas P. Koenzen <akc at apkc.net>
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+-->
+<root definitionID="000000000000">
+    <anchor>Test</anchor>
+    <boost>1.0</boost>
+    <boostwithgravity>1.0</boostwithgravity>
+    <content>QW4gSW5wdXRTdHJlYW1SZWFkZXIgaXMgYSBicmlkZ2UgZnJvbSBieXRlIHN0cmVhbXMgdG8gY2hhcmFjdGVyIHN0cmVhbXM6IEl0IHJlYWRzIGJ5dGVzIGFuZCBkZWNvZGVzIHRoZW0gaW50byBjaGFyYWN0ZXJzIHVzaW5nIGEgc3BlY2lmaWVkIGNoYXJzZXQuIFRoZSBjaGFyc2V0IHRoYXQgaXQgdXNlcyBtYXkgYmUgc3BlY2lmaWVkIGJ5IG5hbWUgb3IgbWF5IGJlIGdpdmVuIGV4cGxpY2l0bHksIG9yIHRoZSBwbGF0Zm9ybSdzIGRlZmF1bHQgY2hhcnNldCBtYXkgYmUgYWNjZXB0ZWQuIEVhY2ggaW52b2NhdGlvbiBvZiBvbmUgb2YgYW4gSW5wdXRTdHJlYW1SZWFkZXIncyByZWFkKCkgbWV0aG9kcyBtYXkgY2F1c2Ugb25lIG9yIG1vcmUgYnl0ZXMgdG8gYmUgcmVhZCBmcm9tIHRoZSB1bmRlcmx5aW5nIGJ5dGUtaW5wdXQgc3RyZWFtLiBUbyBlbmFibGUgdGhlIGVmZmljaWVudCBjb252ZXJzaW9uIG9mIGJ5dGVzIHRvIGNoYXJhY3RlcnMsIG1vcmUgYnl0ZXMgbWF5IGJlIHJlYWQgYWhlYWQgZnJvbSB0aGUgdW5kZXJseWluZyBzdHJlYW0gdGhhbiBhcmUgbmVjZXNzYXJ5IHRvIHNhdGlzZnkgdGhlIGN1cnJlbnQgcmVhZCBvcGVyYXRpb24u</content>
+    <contentraw>QW4gSW5wdXRTdHJlYW1SZWFkZXIgaXMgYSBicmlkZ2UgZnJvbSBieXRlIHN0cmVhbXMgdG8gY2hhcmFjdGVyIHN0cmVhbXM6IEl0IHJlYWRzIGJ5dGVzIGFuZCBkZWNvZGVzIHRoZW0gaW50byBjaGFyYWN0ZXJzIHVzaW5nIGEgc3BlY2lmaWVkIGNoYXJzZXQuIFRoZSBjaGFyc2V0IHRoYXQgaXQgdXNlcyBtYXkgYmUgc3BlY2lmaWVkIGJ5IG5hbWUgb3IgbWF5IGJlIGdpdmVuIGV4cGxpY2l0bHksIG9yIHRoZSBwbGF0Zm9ybSdzIGRlZmF1bHQgY2hhcnNldCBtYXkgYmUgYWNjZXB0ZWQuIEVhY2ggaW52b2NhdGlvbiBvZiBvbmUgb2YgYW4gSW5wdXRTdHJlYW1SZWFkZXIncyByZWFkKCkgbWV0aG9kcyBtYXkgY2F1c2Ugb25lIG9yIG1vcmUgYnl0ZXMgdG8gYmUgcmVhZCBmcm9tIHRoZSB1bmRlcmx5aW5nIGJ5dGUtaW5wdXQgc3RyZWFtLiBUbyBlbmFibGUgdGhlIGVmZmljaWVudCBjb252ZXJzaW9uIG9mIGJ5dGVzIHRvIGNoYXJhY3RlcnMsIG1vcmUgYnl0ZXMgbWF5IGJlIHJlYWQgYWhlYWQgZnJvbSB0aGUgdW5kZXJseWluZyBzdHJlYW0gdGhhbiBhcmUgbmVjZXNzYXJ5IHRvIHNhdGlzZnkgdGhlIGN1cnJlbnQgcmVhZCBvcGVyYXRpb24u</contentraw>
+    <contentfilter>QW4gSW5wdXRTdHJlYW1SZWFkZXIgaXMgYSBicmlkZ2UgZnJvbSBieXRlIHN0cmVhbXMgdG8gY2hhcmFjdGVyIHN0cmVhbXM6IEl0IHJlYWRzIGJ5dGVzIGFuZCBkZWNvZGVzIHRoZW0gaW50byBjaGFyYWN0ZXJzIHVzaW5nIGEgc3BlY2lmaWVkIGNoYXJzZXQuIFRoZSBjaGFyc2V0IHRoYXQgaXQgdXNlcyBtYXkgYmUgc3BlY2lmaWVkIGJ5IG5hbWUgb3IgbWF5IGJlIGdpdmVuIGV4cGxpY2l0bHksIG9yIHRoZSBwbGF0Zm9ybSdzIGRlZmF1bHQgY2hhcnNldCBtYXkgYmUgYWNjZXB0ZWQuIEVhY2ggaW52b2NhdGlvbiBvZiBvbmUgb2YgYW4gSW5wdXRTdHJlYW1SZWFkZXIncyByZWFkKCkgbWV0aG9kcyBtYXkgY2F1c2Ugb25lIG9yIG1vcmUgYnl0ZXMgdG8gYmUgcmVhZCBmcm9tIHRoZSB1bmRlcmx5aW5nIGJ5dGUtaW5wdXQgc3RyZWFtLiBUbyBlbmFibGUgdGhlIGVmZmljaWVudCBjb252ZXJzaW9uIG9mIGJ5dGVzIHRvIGNoYXJhY3RlcnMsIG1vcmUgYnl0ZXMgbWF5IGJlIHJlYWQgYWhlYWQgZnJvbSB0aGUgdW5kZXJseWluZyBzdHJlYW0gdGhhbiBhcmUgbmVjZXNzYXJ5IHRvIHNhdGlzZnkgdGhlIGN1cnJlbnQgcmVhZCBvcGVyYXRpb24u</contentfilter>
+    <contentlength>592</contentlength>
+    <digest>1040840491643509340</digest>
+    <domain>apkc.net</domain>
+    <fetchtime>1427998400742</fetchtime>
+    <filetype>text/plain</filetype>
+    <gravity>10.0</gravity>
+    <host>www.apkc.net</host>
+    <indextime>1427998400742</indextime>
+    <itsecond></itsecond>
+    <itminute></itminute>
+    <ithour></ithour>
+    <itday></itday>
+    <itmonth></itmonth>
+    <ityear></ityear>
+    <lang>en</lang>
+    <lastmodified>1427998400742</lastmodified>
+    <segment>123456</segment>
+    <site>www.apkc.net</site>
+    <title>Test Document</title>
+    <url>www.apkc.net</url>
+</root>

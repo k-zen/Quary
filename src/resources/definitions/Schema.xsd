@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (c) 2015, Andreas P. Koenzen <akc at apkc.net>
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    
+    <xs:element name="fields" type="Fields"/>
+    <xs:element name="field" type="Field"/>
+    <xs:element name="lucenevars" type="LuceneVars"/>
+    <xs:element name="generalproperties" type="GeneralProperties"/>
+    
+    <xs:complexType name="Fields">
+        <xs:sequence>
+            <xs:element name="field" maxOccurs="unbounded" type="Field"/>
+        </xs:sequence>
+        <xs:attribute name="definitionID" type="xs:string" use="required"/>
+        <xs:attribute name="scoreCoeficient" type="xs:float" use="required"/>
+    </xs:complexType>
+    
+    <xs:complexType name="Field">
+        <xs:sequence>
+            <xs:element name="lucenevars" maxOccurs="1" type="LuceneVars"/>
+            <xs:element name="generalproperties" maxOccurs="1" type="GeneralProperties"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="LuceneVars">
+        <xs:sequence>
+            <xs:element name="analyzer" type="xs:byte" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="boost" type="xs:float" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="docvaluetype" type="xs:byte" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="indexed" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="indexoptions" type="xs:byte" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="numericprecisionstep" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="numerictype" type="xs:byte" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="omitnorms" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="stored" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="storetermvectoroffsets" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="storetermvectorpayloads" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="storetermvectorpositions" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="storetermvectors" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="tokenized" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="value" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="GeneralProperties">
+        <xs:sequence>
+            <xs:element name="contentencoding" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="searchable" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+</xs:schema>
