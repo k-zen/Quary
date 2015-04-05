@@ -62,7 +62,7 @@ if [ "x$JAVA_LIBRARY_PATH" != "x" ]; then
 fi
 
 # Main class:
-CLASS="net.apkc.quary.reactor.Start"
+CLASS="net.apkc.quary.brain.Start"
 
 # Debug info:
 echo "# Command: $JAVA" $JAVA_HEAP_MAX $QUARY_OPTS -classpath "$CLASSPATH" $CLASS

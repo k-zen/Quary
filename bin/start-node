@@ -68,4 +68,4 @@ CLASS="net.apkc.quary.node.Start"
 echo "# Command: $JAVA" $JAVA_HEAP_MAX $QUARY_OPTS -classpath "$CLASSPATH" $CLASS
 
 # Run Quary:
-exec "$JAVA" $JAVA_HEAP_MAX $QUARY_OPTS -classpath "$CLASSPATH" $CLASS
+exec "$JAVA" $JAVA_HEAP_MAX $QUARY_OPTS -classpath "$CLASSPATH" $CLASS "$@"
