@@ -39,7 +39,7 @@ public enum Constants
     XSD_SCHEMA_FILE("/resources/definitions/Schema.xsd"),
     // Paths
     DEFINITION_DB_FILE("/Quary/data/definition_db"),
-    INDEX_FILE("/Quary/data/index_"),
+    INDEX_FILE("/Quary/data/index."),
     LOGS_PATH("/Quary/logs"),
     TMP_PATH("/Quary/tmp"),
     // Encryption
