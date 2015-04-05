@@ -56,7 +56,7 @@ public class ReactorTesting
 
         try {
             OutputStream out = client.getOutputStream();
-            for (int k = 0; k < 1000; k++) {
+            for (int k = 0; k < 10; k++) {
                 sendMessage(k, out);
             }
         }
@@ -66,7 +66,6 @@ public class ReactorTesting
 
         try {
             client.close();
-            System.exit(0);
         }
         catch (IOException e) {
             System.err.println("Error: " + e.toString());
@@ -116,6 +115,12 @@ public class ReactorTesting
     public static void main(String args[])
     {
         ReactorTesting t = new ReactorTesting();
-        t.makeConnection();
+
+        // Send in 10 bulks of 1000.
+        for (int k = 0; k < 10; k++) {
+            t.makeConnection();
+        }
+
+        System.exit(0);
     }
 }

@@ -36,7 +36,5 @@ public class NodeChooserTesting
         for (int k = 0; k < 128; k++) {
             NodeChooser.getInstance().addNode(Node.newBuild().setIpAddress("127.0.0.1").setPort(String.valueOf(15000 + k)));
         }
-
-        NodeChooser.getInstance().printDictionary();
     }
 }
