@@ -1,21 +1,72 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 <configuration>
-    <!-- Node: -->
+    <!-- Brain: -->
     <property>
-        <name>node.readers</name>
-        <value>10</value>
+        <name>brain.host</name>
+        <value>127.0.0.1</value>
         <description>
-            The amount of active readers each Node will have.
+            Where the Brain is.
         </description>
     </property>
-  
+    <property>
+        <name>brain.port</name>
+        <value>14998</value>
+        <description>
+            Port that the Brain will listen on.
+        </description>
+    </property>
+    <property>
+        <name>brain.handlers</name>
+        <value>10</value>
+        <description>
+            How many handlers. Each handler handles a proxy request.
+        </description>
+    </property>
+    <property>
+        <name>brain.queuesizeperhandler</name>
+        <value>10</value>
+        <description>
+            The size of the internal processing queue each handler has.
+        </description>
+    </property>
+    <property>
+        <name>brain.readers</name>
+        <value>10</value>
+        <description>
+            How many readers. (?)
+        </description>
+    </property>
+    
     <!-- Reactor -->
     <property>
         <name>reactor.port</name>
         <value>14999</value>
         <description>
             Port that the Reactor will listen on.
+        </description>
+    </property>
+    
+    <!-- Node: -->
+    <property>
+        <name>node.handlers</name>
+        <value>10</value>
+        <description>
+            How many handlers. Each handler handles a proxy request.
+        </description>
+    </property>
+    <property>
+        <name>node.queuesizeperhandler</name>
+        <value>10</value>
+        <description>
+            The size of the internal processing queue each handler has.
+        </description>
+    </property>
+    <property>
+        <name>node.readers</name>
+        <value>10</value>
+        <description>
+            How many readers. (?)
         </description>
     </property>
 </configuration>
