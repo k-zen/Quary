@@ -139,7 +139,6 @@ class XMLProcessor
         }
         catch (ParserConfigurationException | SAXException | IOException ex) {
             System.err.println("Error configuring processor. Error: " + ex.toString());
-            System.exit(1);
         }
 
         return this;
