@@ -37,6 +37,20 @@
             How many readers. (?)
         </description>
     </property>
+    <property>
+        <name>brain.connection.maxretries</name>
+        <value>4</value>
+        <description>
+            How many times Hadoop's RPC class will try to reconnect with a given proxy.
+        </description>
+    </property>
+    <property>
+        <name>brain.connection.sleeptime</name>
+        <value>5</value>
+        <description>
+            How long will it Hadoop's RPC will wait before retries.
+        </description>
+    </property>
     
     <!-- Reactor -->
     <property>
@@ -67,6 +81,20 @@
         <value>10</value>
         <description>
             How many readers. (?)
+        </description>
+    </property>
+    <property>
+        <name>node.connection.maxretries</name>
+        <value>4</value>
+        <description>
+            How many times Hadoop's RPC class will try to reconnect with a given proxy.
+        </description>
+    </property>
+    <property>
+        <name>node.connection.sleeptime</name>
+        <value>5</value>
+        <description>
+            How long will it Hadoop's RPC will wait before retries.
         </description>
     </property>
 </configuration>
