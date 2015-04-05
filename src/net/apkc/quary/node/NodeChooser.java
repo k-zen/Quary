@@ -25,9 +25,13 @@
  */
 package net.apkc.quary.node;
 
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import net.apkc.quary.exceptions.InvalidDocumentMapperException;
 import net.apkc.quary.exceptions.InvalidIndexException;
 import net.apkc.quary.exceptions.ZeroNodesException;
@@ -70,6 +74,8 @@ public final class NodeChooser
     /**
      * Reset the dictionary to its original settings. Each time a new node has been
      * added, the dictionary must be recomputed.
+     *
+     * NOTE: Do not synchronize this method! It is already used inside synchronized methods.
      */
     private void resetDictionary()
     {
@@ -83,29 +89,29 @@ public final class NodeChooser
     /**
      * This method calculates the index in the dictionary of a given Document Mapper.
      *
-     * @param documentMapper The Document Mapper.
+     * @param DOCUMENT_MAPPER The Document Mapper.
      *
      * @return The position in the dictionary.
      *
      * @throws InvalidDocumentMapperException If the Document Mapper is invalid.
      */
-    public int calculateDictionaryIndex(int documentMapper) throws InvalidDocumentMapperException
+    public int calculateDictionaryIndex(final int DOCUMENT_MAPPER) throws InvalidDocumentMapperException
     {
-        return Math.abs((((getIndexFromDocumentMapper(documentMapper) + 1) % lastNode) - 16) % 16);
+        return Math.abs((((getIndexFromDocumentMapper(DOCUMENT_MAPPER) + 1) % lastNode) - 16) % 16);
     }
 
     /**
      * This method will map a character (Document Mapper) to a given index in the dictionary.
      *
-     * @param documentMapper The Document Mapper (The Index).
+     * @param DOCUMENT_MAPPER The Document Mapper (The Index).
      *
      * @return The dictionary index that corresponds to the Document Mapper.
      *
      * @throws InvalidDocumentMapperException If the Document Mapper is not valid.
      */
-    public int getIndexFromDocumentMapper(int documentMapper) throws InvalidDocumentMapperException
+    public int getIndexFromDocumentMapper(final int DOCUMENT_MAPPER) throws InvalidDocumentMapperException
     {
-        switch (documentMapper) {
+        switch (DOCUMENT_MAPPER) {
             case 48:
             case 49:
             case 50:
@@ -116,7 +122,7 @@ public final class NodeChooser
             case 55:
             case 56:
             case 57:
-                return Integer.parseInt(String.valueOf((char) documentMapper));
+                return Integer.parseInt(String.valueOf((char) DOCUMENT_MAPPER));
             case 65:
             case 97:
                 return 10;
@@ -143,15 +149,15 @@ public final class NodeChooser
     /**
      * This method will map an index in dictionary to a given Document Mapper.
      *
-     * @param index The index.
+     * @param INDEX The index.
      *
      * @return The Document Mapper that corresponds to that index.
      *
      * @throws InvalidIndexException If the index is not valid.
      */
-    public int getDocumentMapperFromIndex(int index) throws InvalidIndexException
+    public int getDocumentMapperFromIndex(final int INDEX) throws InvalidIndexException
     {
-        switch (index) {
+        switch (INDEX) {
             case 0:
             case 1:
             case 2:
@@ -162,7 +168,7 @@ public final class NodeChooser
             case 7:
             case 8:
             case 9:
-                return String.valueOf(index).charAt(0);
+                return String.valueOf(INDEX).charAt(0);
             case 10:
                 return 97;
             case 11:
@@ -186,35 +192,69 @@ public final class NodeChooser
      *
      * @param node The new node to add.
      */
-    public void addNode(Node node)
+    public synchronized void addNode(Node node)
     {
         int currentNodeID = lastNode + 1;
         synchronized (NODES) {
             NODES.add(node.setNodeID(currentNodeID));
-        }
 
-        lastNode = currentNodeID;
+            lastNode = currentNodeID;
 
-        // Assign the node to a letter in the dictionary.
-        synchronized (DICTIONARY) {
-            resetDictionary();
-            NODES.stream().forEach((n) -> {
-                List<Node> l = DICTIONARY.get(Math.abs(((n.getNodeID() % lastNode) - 16) % 16));
-                l.add(n);
-            });
-        }
+            // Assign the node to a letter in the dictionary.
+            synchronized (DICTIONARY) {
+                resetDictionary();
+                NODES.stream().forEach((n) -> {
+                    List<Node> l = DICTIONARY.get(Math.abs(((n.getNodeID() % lastNode) - 16) % 16));
+                    l.add(n);
+                });
+            }
 
-        if (LOG.isInfoEnabled()) {
-            LOG.info("****** NEW NODE ******");
-            LOG.info("* Host ==> " + node.getIpAddress());
-            LOG.info("* Port ==> " + node.getPort());
-            LOG.info("* Nodes Hive ==>");
-            for (int k = 0; k < DICTIONARY.size(); k++) {
-                try {
-                    LOG.info("\t" + ((char) getDocumentMapperFromIndex(k)) + " ==> " + Arrays.toString(DICTIONARY.get(k).toArray(new Node[0])));
+            if (LOG.isInfoEnabled()) {
+                LOG.info("****** NEW NODE ******");
+                LOG.info("* Host ==> " + node.getIpAddress());
+                LOG.info("* Port ==> " + node.getPort());
+                LOG.info("* Nodes Hive ==>");
+                for (int k = 0; k < DICTIONARY.size(); k++) {
+                    try {
+                        LOG.info("\t" + ((char) getDocumentMapperFromIndex(k)) + " ==> " + Arrays.toString(DICTIONARY.get(k).toArray(new Node[0])));
+                    }
+                    catch (Exception e) {
+                        LOG.info("\tError printing this index.");
+                    }
                 }
-                catch (Exception e) {
-                    LOG.info("\tError printing this index.");
+            }
+        }
+    }
+
+    private synchronized void removeNode(Node node)
+    {
+        int currentNodeID = lastNode - 1;
+        synchronized (NODES) {
+            NODES.remove(node);
+
+            lastNode = currentNodeID;
+
+            // Assign the node to a letter in the dictionary.
+            synchronized (DICTIONARY) {
+                resetDictionary();
+                NODES.stream().forEach((n) -> {
+                    List<Node> l = DICTIONARY.get(Math.abs(((n.getNodeID() % lastNode) - 16) % 16));
+                    l.add(n);
+                });
+            }
+
+            if (LOG.isInfoEnabled()) {
+                LOG.info("****** NODE REMOVED ******");
+                LOG.info("* Host ==> " + node.getIpAddress());
+                LOG.info("* Port ==> " + node.getPort());
+                LOG.info("* Nodes Hive ==>");
+                for (int k = 0; k < DICTIONARY.size(); k++) {
+                    try {
+                        LOG.info("\t" + ((char) getDocumentMapperFromIndex(k)) + " ==> " + Arrays.toString(DICTIONARY.get(k).toArray(new Node[0])));
+                    }
+                    catch (Exception e) {
+                        LOG.info("\tError printing this index.");
+                    }
                 }
             }
         }
@@ -223,25 +263,69 @@ public final class NodeChooser
     /**
      * Given a character, it will return the node that corresponds to that character.
      *
-     * @param c A character.
+     * @param C A character.
      *
      * @return The node where that character belongs.
      *
      * @throws ZeroNodesException If no nodes was found.
      */
-    Node getNode(char c) throws ZeroNodesException, InvalidDocumentMapperException
+    Node getNode(final char C) throws ZeroNodesException, InvalidDocumentMapperException
     {
         if (lastNode == 0) {
             throw new ZeroNodesException("No nodes available!");
         }
 
-        final int NODES_AVAILABLE = DICTIONARY.get(getIndexFromDocumentMapper(c)).size();
+        final int NODES_AVAILABLE = DICTIONARY.get(getIndexFromDocumentMapper(C)).size();
         if (NODES_AVAILABLE < 1) {
             throw new ZeroNodesException("No nodes available for that Document Mapper!");
         }
         else {
-            // Select a random node.
-            return DICTIONARY.get(getIndexFromDocumentMapper(c)).get(RandomUtils.nextInt(NODES_AVAILABLE));
+            return DICTIONARY.get(getIndexFromDocumentMapper(C)).get(RandomUtils.nextInt(NODES_AVAILABLE));
+        }
+    }
+
+    public class Ping implements Runnable
+    {
+
+        final List<Node> NODES_FOR_REMOVAL = new LinkedList<>();
+
+        @Override
+        public void run()
+        {
+            while (true) {
+                synchronized (NODES) {
+                    NODES.stream().forEach((Node n) -> {
+                        try {
+                            try (Socket socket = new Socket()) {
+                                socket.connect(new InetSocketAddress(n.getIpAddress(), n.getPort()), 200);
+                                LOG.info("Node *" + n.toString() + "* is up.");
+                            }
+                        }
+                        catch (Exception e) {
+                            NODES_FOR_REMOVAL.add(n);
+                            LOG.info("Node *" + n.toString() + "* is down. It will be removed.");
+                        }
+                    });
+                }
+
+                ListIterator<Node> i = NODES_FOR_REMOVAL.listIterator();
+                while (i.hasNext()) {
+                    Node n = i.next();
+                    removeNode(n);
+                    i.remove();
+                }
+
+                try {
+                    Thread.currentThread().join(2000);
+                }
+                catch (Exception e) {
+                    LOG.error("Generic error.", e);
+                }
+
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Checking nodes...");
+                }
+            }
         }
     }
 }

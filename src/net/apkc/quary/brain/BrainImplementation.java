@@ -60,6 +60,6 @@ public class BrainImplementation implements BrainInterface
     @Override
     public ProtocolSignature getProtocolSignature(String string, long l, int i) throws IOException
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new ProtocolSignature(versionID, null);
     }
 }

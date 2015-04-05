@@ -33,7 +33,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import org.apache.hadoop.io.Writable;
 
-public abstract class QuaryWritable implements Externalizable, Writable
+public abstract class QuaryWritable implements Comparable<QuaryWritable>, Externalizable, Writable
 {
 
     @Override

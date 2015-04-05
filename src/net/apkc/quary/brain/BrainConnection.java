@@ -28,50 +28,35 @@ package net.apkc.quary.brain;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import net.apkc.quary.util.QuaryConfiguration;
-import net.apkc.quary.util.Timer;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.ipc.RPC;
-import org.apache.log4j.Logger;
+import org.apache.hadoop.net.NetUtils;
+import org.apache.hadoop.security.UserGroupInformation;
 
 public class BrainConnection
 {
 
-    private static final Logger LOG = Logger.getLogger(BrainConnection.class.getName());
     private static final Configuration CONF = new QuaryConfiguration().create();
 
     /**
      * Establish a live connection to the *Brain*.
+     * TODO: Find a way to add a custom RetryPolicy, like: <code>RetryPolicies.retryUpToMaximumCountWithFixedSleep(CONF.getInt("brain.connection.maxretries", 4),CONF.getInt("brain.connection.sleeptime", 5),TimeUnit.SECONDS)</code>
      *
      * @return A BrainInterface object. It can be used to interact with the *Brain*.
+     *
+     * @throws IOException If a connection wasn't possible.
      */
-    public static BrainInterface getConnection()
+    public static BrainInterface getConnection() throws IOException
     {
-        Timer t = new Timer();
-        t.starTimer();
-        BrainInterface bean = null;
-        int maxtries = 30;
-        int tryCounter = 0;
-
-        while (tryCounter < maxtries) {
-            try {
-                bean = (BrainInterface) RPC.getProxy(BrainInterface.class,
-                                                     BrainInterface.versionID,
-                                                     new InetSocketAddress(CONF.get("brain.host", "127.0.0.1"), CONF.getInt("brain.port", 14998)),
-                                                     CONF);
-
-                if (bean != null && bean.isUp()) {
-                    t.endTimer();
-                    return bean;
-                }
-            }
-            catch (IOException e) {
-                tryCounter++;
-                LOG.info("Can't connect to *Brain*. Try (" + tryCounter + "). Trying again...");
-            }
-        }
-
-        LOG.fatal("Impossible to connect to *Brain*. Giving up.");
-
-        return bean;
+        return RPC.getProtocolProxy(BrainInterface.class,
+                                    BrainInterface.versionID,
+                                    new InetSocketAddress(
+                                            CONF.get("brain.host", "127.0.0.1"),
+                                            CONF.getInt("brain.port", 14998)),
+                                    UserGroupInformation.getCurrentUser(),
+                                    CONF,
+                                    NetUtils.getDefaultSocketFactory(CONF),
+                                    2000,
+                                    null).getProxy();
     }
 }

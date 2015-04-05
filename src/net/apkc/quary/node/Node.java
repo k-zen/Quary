@@ -32,21 +32,17 @@ import net.apkc.quary.util.QuaryWritable;
 import org.apache.log4j.Logger;
 
 /**
- * This class represents a node and all its settings.
+ * This class represents a *Node* component and all its settings.
  *
  * @author Andreas P. Koenzen <akc at apkc.net>
  */
-public class Node extends QuaryWritable
+public final class Node extends QuaryWritable
 {
 
     private static final Logger LOG = Logger.getLogger(Node.class.getName());
     private int nodeID = -1;
     private String ipAddress = "";
     private int port = 15000;
-
-    public Node()
-    {
-    }
 
     public static Node newBuild()
     {
@@ -59,6 +55,11 @@ public class Node extends QuaryWritable
         return this;
     }
 
+    int getNodeID()
+    {
+        return nodeID;
+    }
+
     public Node setIpAddress(String newString)
     {
         if (newString == null || newString.isEmpty()) {
@@ -67,6 +68,11 @@ public class Node extends QuaryWritable
 
         ipAddress = newString;
         return this;
+    }
+
+    public String getIpAddress()
+    {
+        return ipAddress;
     }
 
     public Node setPort(String newString)
@@ -83,16 +89,6 @@ public class Node extends QuaryWritable
         }
 
         return this;
-    }
-
-    int getNodeID()
-    {
-        return nodeID;
-    }
-
-    public String getIpAddress()
-    {
-        return ipAddress;
     }
 
     public int getPort()
@@ -123,5 +119,75 @@ public class Node extends QuaryWritable
         nodeID = in.readInt();
         ipAddress = in.readUTF();
         port = in.readInt();
+    }
+
+    /**
+     * Will return &lt; 0 if this.nodeID precedes o.nodeID.
+     *
+     * <p>
+     * The sorting order (ascending | descending) will be in charge of the collection,
+     * according to the natural ordering. Since the elements taking into
+     * account for ordering in this case are Integers, the natural order
+     * will be numerically ascending.
+     * </p>
+     *
+     * <p>
+     * <b>Example:</b>
+     * <pre>
+     * 1
+     * 2
+     * 3
+     * ...
+     * </pre>
+     * </p>
+     *
+     * @param o The other object to compare.
+     *
+     * @return -1 if this object precedes the other attribute, 0 if they are
+     *         equal, and 1 if this object supercedes the other object.
+     */
+    @Override
+    public int compareTo(QuaryWritable o)
+    {
+        Node n = (Node) o;
+        return this.nodeID == n.nodeID ? 0 : (this.nodeID < n.nodeID ? -1 : 1);
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (!(obj instanceof Node)) {
+            return false;
+        }
+
+        Node n = (Node) obj;
+        return hashCode() == n.hashCode();
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 0x54;
+        hash ^= (nodeID);
+        hash ^= (ipAddress != null) ? ipAddress.hashCode() : 0x0;
+        hash ^= (port);
+
+        return hash;
+    }
+
+    @Override
+    protected Object clone()
+    {
+        try {
+            return ((Node) super.clone())
+                    .setNodeID(nodeID)
+                    .setIpAddress(ipAddress)
+                    .setPort(String.valueOf(port));
+        }
+        catch (CloneNotSupportedException e) {
+            LOG.warn("Error cloning *Node* object.", e);
+        }
+
+        return null;
     }
 }

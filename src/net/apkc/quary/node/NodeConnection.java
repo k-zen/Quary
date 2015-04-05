@@ -30,19 +30,19 @@ import java.net.InetSocketAddress;
 import net.apkc.quary.exceptions.InvalidDocumentMapperException;
 import net.apkc.quary.exceptions.ZeroNodesException;
 import net.apkc.quary.util.QuaryConfiguration;
-import net.apkc.quary.util.Timer;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.ipc.RPC;
-import org.apache.log4j.Logger;
+import org.apache.hadoop.net.NetUtils;
+import org.apache.hadoop.security.UserGroupInformation;
 
 public class NodeConnection
 {
 
-    private static final Logger LOG = Logger.getLogger(NodeConnection.class.getName());
     private static final Configuration CONF = new QuaryConfiguration().create();
 
     /**
      * Establish a live connection a given node.
+     * TODO: Find a way to add a custom RetryPolicy, like: <code>RetryPolicies.retryUpToMaximumCountWithFixedSleep(CONF.getInt("node.connection.maxretries", 4),CONF.getInt("node.connection.sleeptime", 5),TimeUnit.SECONDS)</code>
      *
      * @param c The first character of the document to handle. Based on this we know where to index.
      *
@@ -50,35 +50,19 @@ public class NodeConnection
      *
      * @throws ZeroNodesException             If no nodes was found.
      * @throws InvalidDocumentMapperException If the Document Mapper is invalid.
+     * @throws IOException                    If a connection wasn't possible.
      */
-    public static NodeInterface getConnection(char c) throws ZeroNodesException, InvalidDocumentMapperException
+    public static NodeInterface getConnection(char c) throws ZeroNodesException, InvalidDocumentMapperException, IOException
     {
-        Timer t = new Timer();
-        t.starTimer();
-        NodeInterface bean = null;
-        int maxtries = 30;
-        int tryCounter = 0;
-
-        while (tryCounter < maxtries) {
-            try {
-                bean = (NodeInterface) RPC.getProxy(NodeInterface.class,
-                                                    NodeInterface.versionID,
-                                                    new InetSocketAddress(NodeChooser.getInstance().getNode(c).getIpAddress(), NodeChooser.getInstance().getNode(c).getPort()),
-                                                    CONF);
-
-                if (bean != null && bean.isUp()) {
-                    t.endTimer();
-                    return bean;
-                }
-            }
-            catch (IOException e) {
-                tryCounter++;
-                LOG.info("Can't connect to node. Try (" + tryCounter + "). Trying again...");
-            }
-        }
-
-        LOG.fatal("Impossible to connect to node. Giving up.");
-
-        return bean;
+        return RPC.getProtocolProxy(NodeInterface.class,
+                                    NodeInterface.versionID,
+                                    new InetSocketAddress(
+                                            NodeChooser.getInstance().getNode(c).getIpAddress(),
+                                            NodeChooser.getInstance().getNode(c).getPort()),
+                                    UserGroupInformation.getCurrentUser(),
+                                    CONF,
+                                    NetUtils.getDefaultSocketFactory(CONF),
+                                    2000,
+                                    null).getProxy();
     }
 }

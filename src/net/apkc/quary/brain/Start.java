@@ -26,9 +26,11 @@
 package net.apkc.quary.brain;
 
 import java.io.IOException;
+import net.apkc.emma.tasks.TasksHandler;
 import net.apkc.quary.config.XMLBuilder;
 import net.apkc.quary.definitions.index.IndexDefinitionDB;
 import net.apkc.quary.exceptions.ServerNotConfiguredException;
+import net.apkc.quary.node.NodeChooser;
 import net.apkc.quary.reactor.Reactor;
 import net.apkc.quary.util.Constants;
 import net.apkc.quary.util.QuaryConfiguration;
@@ -107,6 +109,15 @@ public class Start
                 catch (InterruptedException e) {
                     LOG.fatal("*Brain* was interrupted.", e);
                 }
+            }
+        }.start();
+
+        new Thread("QUARY:PING:START")
+        {
+            @Override
+            public void run()
+            {
+                TasksHandler.getInstance().submitInfiniteTask(NodeChooser.getInstance().new Ping());
             }
         }.start();
     }
