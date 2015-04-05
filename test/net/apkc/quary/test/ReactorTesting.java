@@ -56,7 +56,7 @@ public class ReactorTesting
 
         try {
             OutputStream out = client.getOutputStream();
-            for (int k = 0; k < 10; k++) {
+            for (int k = 0; k < 1000; k++) {
                 sendMessage(k, out);
             }
         }
