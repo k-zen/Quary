@@ -80,10 +80,11 @@ public interface NodeInterface extends VersionedProtocol
      *
      * @param conf         The configuration file.
      * @param definitionID The ID of the index.
+     * @param character    The character ID that the node is indexing.
      *
      * @return 0 if the operation was completed without errors, >0 otherwise.
      */
-    public int openWriter(Configuration conf, String definitionID);
+    public int openWriter(Configuration conf, String definitionID, char character);
 
     /**
      * Creates the kernel index. Via local or remote interface.

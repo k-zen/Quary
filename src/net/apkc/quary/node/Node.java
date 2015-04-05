@@ -25,10 +25,10 @@
  */
 package net.apkc.quary.node;
 
-import java.io.Externalizable;
+import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import net.apkc.quary.util.QuaryWritable;
 import org.apache.log4j.Logger;
 
 /**
@@ -36,7 +36,7 @@ import org.apache.log4j.Logger;
  *
  * @author Andreas P. Koenzen <akc at apkc.net>
  */
-public class Node implements Externalizable
+public class Node extends QuaryWritable
 {
 
     private static final Logger LOG = Logger.getLogger(Node.class.getName());
@@ -110,7 +110,7 @@ public class Node implements Externalizable
     }
 
     @Override
-    public void writeExternal(ObjectOutput out) throws IOException
+    public void internalWrite(DataOutput out) throws IOException
     {
         out.writeInt(nodeID);
         out.writeUTF(ipAddress);
@@ -118,7 +118,7 @@ public class Node implements Externalizable
     }
 
     @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+    public void internalRead(DataInput in) throws IOException
     {
         nodeID = in.readInt();
         ipAddress = in.readUTF();

@@ -26,7 +26,10 @@
 package net.apkc.quary.node;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import net.apkc.quary.brain.BrainConnection;
 import net.apkc.quary.util.QuaryConfiguration;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.ipc.RPC;
 import org.apache.log4j.Logger;
 
@@ -37,32 +40,52 @@ public class Start
 
     public static void main(String[] args)
     {
-        System.out.println("Starting node on port: 15000");
+        if (args.length < 1) {
+            System.err.printf("Port parameter not passed! Try again.\n");
+            System.exit(-1);
+        }
 
         try {
-            // Starting server RPC.
-            System.out.println("\tInitializing RPC listener:");
-            System.out.println("\t\tHandlers: 10");
-            System.out.println("\t\tVerbose: true");
+            final Configuration CONF = new QuaryConfiguration().create();
+            final String NODE_IP_ADDRESS = InetAddress.getLocalHost().getHostAddress();
+            final String NODE_ADDRESS = "0.0.0.0";
+            final Integer NODE_PORT = Integer.parseInt(args[0]);
+            final Integer NODE_HANDLERS = CONF.getInt("node.handlers", 10);
+            final Integer NODE_QUEUE_SIZE_PER_HANDLER = CONF.getInt("node.queuesizeperhandler", 10);
+            final Integer NODE_READERS = CONF.getInt("node.readers", 10);
 
-            RPC.Server srv = new RPC.Builder(new QuaryConfiguration().create())
+            System.out.printf("Starting node...\n");
+            System.out.printf("\tBind Address: %s\n", NODE_ADDRESS);
+            System.out.printf("\tPort: %d\n", NODE_PORT);
+            System.out.printf("\tHandlers: %d\n", NODE_HANDLERS);
+            System.out.printf("\tQueue Size Per Handler: %d\n", NODE_QUEUE_SIZE_PER_HANDLER);
+            System.out.printf("\tReaders: %d\n", NODE_READERS);
+            System.out.printf("\tRegistering node with *Brain*.\n");
+            BrainConnection
+                    .getConnection()
+                    .registerNode(Node
+                            .newBuild()
+                            .setIpAddress(NODE_IP_ADDRESS)
+                            .setPort(String.valueOf(NODE_PORT)));
+
+            RPC.Server srv = new RPC.Builder(CONF)
                     .setProtocol(NodeInterface.class)
                     .setInstance(new NodeImplementation())
-                    .setBindAddress("0.0.0.0")
-                    .setQueueSizePerHandler(20)
-                    .setPort(15000)
-                    .setNumHandlers(20)
+                    .setBindAddress(NODE_ADDRESS)
+                    .setPort(NODE_PORT)
+                    .setNumHandlers(NODE_HANDLERS)
+                    .setQueueSizePerHandler(NODE_QUEUE_SIZE_PER_HANDLER)
+                    .setnumReaders(NODE_READERS)
                     .setVerbose(true)
-                    .setnumReaders(20)
                     .build();
-            srv.start(); // Start the server.
-            srv.join(); // Demonize the server.
+            srv.start();
+            srv.join();
         }
         catch (IOException e) {
-            LOG.fatal("Impossible to initialize IndexServer. Error: " + e.toString(), e);
+            LOG.fatal("Error starting *Node*.", e);
         }
         catch (InterruptedException e) {
-            LOG.fatal("The IndexServer was interrupted. Error: " + e.toString(), e);
+            LOG.fatal("*Node* was interrupted.", e);
         }
     }
 }

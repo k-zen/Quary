@@ -23,26 +23,40 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package net.apkc.quary.reactor;
+package net.apkc.quary.brain;
 
-import net.apkc.emma.tasks.TasksHandler;
-import net.apkc.quary.config.XMLBuilder;
-import net.apkc.quary.definitions.index.IndexDefinitionDB;
-import net.apkc.quary.tasks.init.ReactorStartTask;
-import net.apkc.quary.util.Constants;
-import org.apache.log4j.Logger;
+import net.apkc.quary.node.Node;
+import org.apache.hadoop.ipc.VersionedProtocol;
 
-public class Start
+/**
+ * Interface for Brain.
+ *
+ * @author Andreas P. Koenzen
+ * @version 1.0
+ */
+public interface BrainInterface extends VersionedProtocol
 {
 
-    private static final Logger LOG = Logger.getLogger(Start.class.getName());
+    public static long versionID = 1L;
 
-    public static void main(String[] args)
-    {
-        // Add test definition to db and then save to file.
-        IndexDefinitionDB.update(IndexDefinitionDB.read().addDefinition("000000000000", XMLBuilder.parseDefinitionFile(Start.class.getResourceAsStream(Constants.TEST_DEFINITION.getStringConstant()))));
+    /**
+     * Returns the version of the node.
+     *
+     * @return A long number with the version of the node.
+     */
+    public long version();
 
-        // Launch HTTP server proceses
-        TasksHandler.getInstance().submitInfiniteTask(ReactorStartTask.newBuild());
-    }
+    /**
+     * Utility method to check if a node is up and running.
+     *
+     * @return TRUE if the node is up, FALSE otherwise.
+     */
+    public boolean isUp();
+
+    /**
+     * Register a new node.
+     *
+     * @param newNode The new node to add.
+     */
+    public void registerNode(Node newNode);
 }

@@ -25,15 +25,13 @@
  */
 package net.apkc.quary.node;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import net.apkc.quary.exceptions.InvalidDocumentMapperException;
+import net.apkc.quary.exceptions.InvalidIndexException;
 import net.apkc.quary.exceptions.ZeroNodesException;
-import net.apkc.quary.util.QuaryConfiguration;
-import net.apkc.quary.util.Timer;
-import org.apache.hadoop.ipc.RPC;
+import org.apache.commons.lang.math.RandomUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -46,22 +44,6 @@ public final class NodeChooser
 {
 
     private static final Logger LOG = Logger.getLogger(NodeChooser.class.getName());
-    private static final Integer CHAR_0 = 0;
-    private static final Integer CHAR_1 = 1;
-    private static final Integer CHAR_2 = 2;
-    private static final Integer CHAR_3 = 3;
-    private static final Integer CHAR_4 = 4;
-    private static final Integer CHAR_5 = 5;
-    private static final Integer CHAR_6 = 6;
-    private static final Integer CHAR_7 = 7;
-    private static final Integer CHAR_8 = 8;
-    private static final Integer CHAR_9 = 9;
-    private static final Integer CHAR_A = 10;
-    private static final Integer CHAR_B = 11;
-    private static final Integer CHAR_C = 12;
-    private static final Integer CHAR_D = 13;
-    private static final Integer CHAR_E = 14;
-    private static final Integer CHAR_F = 15;
     private final List<List<Node>> DICTIONARY = new ArrayList<>(16);
     private final List<Node> NODES = new ArrayList<>();
     private Integer lastNode = 0;
@@ -93,22 +75,109 @@ public final class NodeChooser
     {
         DICTIONARY.clear();
 
-        DICTIONARY.add(CHAR_0, new ArrayList<>());
-        DICTIONARY.add(CHAR_1, new ArrayList<>());
-        DICTIONARY.add(CHAR_2, new ArrayList<>());
-        DICTIONARY.add(CHAR_3, new ArrayList<>());
-        DICTIONARY.add(CHAR_4, new ArrayList<>());
-        DICTIONARY.add(CHAR_5, new ArrayList<>());
-        DICTIONARY.add(CHAR_6, new ArrayList<>());
-        DICTIONARY.add(CHAR_7, new ArrayList<>());
-        DICTIONARY.add(CHAR_8, new ArrayList<>());
-        DICTIONARY.add(CHAR_9, new ArrayList<>());
-        DICTIONARY.add(CHAR_A, new ArrayList<>());
-        DICTIONARY.add(CHAR_B, new ArrayList<>());
-        DICTIONARY.add(CHAR_C, new ArrayList<>());
-        DICTIONARY.add(CHAR_D, new ArrayList<>());
-        DICTIONARY.add(CHAR_E, new ArrayList<>());
-        DICTIONARY.add(CHAR_F, new ArrayList<>());
+        for (int k = 0; k < 16; k++) {
+            DICTIONARY.add(k, new ArrayList<>());
+        }
+    }
+
+    /**
+     * This method calculates the index in the dictionary of a given Document Mapper.
+     *
+     * @param documentMapper The Document Mapper.
+     *
+     * @return The position in the dictionary.
+     *
+     * @throws InvalidDocumentMapperException If the Document Mapper is invalid.
+     */
+    public int calculateDictionaryIndex(int documentMapper) throws InvalidDocumentMapperException
+    {
+        return Math.abs((((getIndexFromDocumentMapper(documentMapper) + 1) % lastNode) - 16) % 16);
+    }
+
+    /**
+     * This method will map a character (Document Mapper) to a given index in the dictionary.
+     *
+     * @param documentMapper The Document Mapper (The Index).
+     *
+     * @return The dictionary index that corresponds to the Document Mapper.
+     *
+     * @throws InvalidDocumentMapperException If the Document Mapper is not valid.
+     */
+    public int getIndexFromDocumentMapper(int documentMapper) throws InvalidDocumentMapperException
+    {
+        switch (documentMapper) {
+            case 48:
+            case 49:
+            case 50:
+            case 51:
+            case 52:
+            case 53:
+            case 54:
+            case 55:
+            case 56:
+            case 57:
+                return Integer.parseInt(String.valueOf((char) documentMapper));
+            case 65:
+            case 97:
+                return 10;
+            case 66:
+            case 98:
+                return 11;
+            case 67:
+            case 99:
+                return 12;
+            case 68:
+            case 100:
+                return 13;
+            case 69:
+            case 101:
+                return 14;
+            case 70:
+            case 102:
+                return 15;
+            default:
+                throw new InvalidDocumentMapperException("Document Mapper not valid!");
+        }
+    }
+
+    /**
+     * This method will map an index in dictionary to a given Document Mapper.
+     *
+     * @param index The index.
+     *
+     * @return The Document Mapper that corresponds to that index.
+     *
+     * @throws InvalidIndexException If the index is not valid.
+     */
+    public int getDocumentMapperFromIndex(int index) throws InvalidIndexException
+    {
+        switch (index) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+                return String.valueOf(index).charAt(0);
+            case 10:
+                return 97;
+            case 11:
+                return 98;
+            case 12:
+                return 99;
+            case 13:
+                return 100;
+            case 14:
+                return 101;
+            case 15:
+                return 102;
+            default:
+                throw new InvalidIndexException("Index not valid!");
+        }
     }
 
     /**
@@ -135,97 +204,44 @@ public final class NodeChooser
             });
         }
 
-        System.out.println("\t\tAdded new node at:");
-        System.out.println("\t\t\tHost ==> " + node.getIpAddress());
-        System.out.println("\t\t\tPort ==> " + node.getPort());
+        if (LOG.isInfoEnabled()) {
+            LOG.info("****** NEW NODE ******");
+            LOG.info("* Host ==> " + node.getIpAddress());
+            LOG.info("* Port ==> " + node.getPort());
+            LOG.info("* Nodes Hive ==>");
+            for (int k = 0; k < DICTIONARY.size(); k++) {
+                try {
+                    LOG.info("\t" + ((char) getDocumentMapperFromIndex(k)) + " ==> " + Arrays.toString(DICTIONARY.get(k).toArray(new Node[0])));
+                }
+                catch (Exception e) {
+                    LOG.info("\tError printing this index.");
+                }
+            }
+        }
     }
 
-    private Node getNode(char c) throws ZeroNodesException
+    /**
+     * Given a character, it will return the node that corresponds to that character.
+     *
+     * @param c A character.
+     *
+     * @return The node where that character belongs.
+     *
+     * @throws ZeroNodesException If no nodes was found.
+     */
+    Node getNode(char c) throws ZeroNodesException, InvalidDocumentMapperException
     {
         if (lastNode == 0) {
             throw new ZeroNodesException("No nodes available!");
         }
 
-        switch (c) {
-            case '0':
-                return DICTIONARY.get(CHAR_0).get(0); // Default node is 0. In this case it may be null.
-            case '1':
-                return (DICTIONARY.get(CHAR_1).size() < 1) ? DICTIONARY.get(CHAR_0).get(0) : DICTIONARY.get(CHAR_1).get(0);
-            case '2':
-                return (DICTIONARY.get(CHAR_2).size() < 1) ? DICTIONARY.get(CHAR_0).get(0) : DICTIONARY.get(CHAR_2).get(0);
-            case '3':
-                return (DICTIONARY.get(CHAR_3).size() < 1) ? DICTIONARY.get(CHAR_0).get(0) : DICTIONARY.get(CHAR_3).get(0);
-            case '4':
-                return (DICTIONARY.get(CHAR_4).size() < 1) ? DICTIONARY.get(CHAR_0).get(0) : DICTIONARY.get(CHAR_4).get(0);
-            case '5':
-                return (DICTIONARY.get(CHAR_5).size() < 1) ? DICTIONARY.get(CHAR_0).get(0) : DICTIONARY.get(CHAR_5).get(0);
-            case '6':
-                return (DICTIONARY.get(CHAR_6).size() < 1) ? DICTIONARY.get(CHAR_0).get(0) : DICTIONARY.get(CHAR_6).get(0);
-            case '7':
-                return (DICTIONARY.get(CHAR_7).size() < 1) ? DICTIONARY.get(CHAR_0).get(0) : DICTIONARY.get(CHAR_7).get(0);
-            case '8':
-                return (DICTIONARY.get(CHAR_8).size() < 1) ? DICTIONARY.get(CHAR_0).get(0) : DICTIONARY.get(CHAR_8).get(0);
-            case '9':
-                return (DICTIONARY.get(CHAR_9).size() < 1) ? DICTIONARY.get(CHAR_0).get(0) : DICTIONARY.get(CHAR_9).get(0);
-            case 'A':
-            case 'a':
-                return (DICTIONARY.get(CHAR_A).size() < 1) ? DICTIONARY.get(CHAR_0).get(0) : DICTIONARY.get(CHAR_A).get(0);
-            case 'B':
-            case 'b':
-                return (DICTIONARY.get(CHAR_B).size() < 1) ? DICTIONARY.get(CHAR_0).get(0) : DICTIONARY.get(CHAR_B).get(0);
-            case 'C':
-            case 'c':
-                return (DICTIONARY.get(CHAR_C).size() < 1) ? DICTIONARY.get(CHAR_0).get(0) : DICTIONARY.get(CHAR_C).get(0);
-            case 'D':
-            case 'd':
-                return (DICTIONARY.get(CHAR_D).size() < 1) ? DICTIONARY.get(CHAR_0).get(0) : DICTIONARY.get(CHAR_D).get(0);
-            case 'E':
-            case 'e':
-                return (DICTIONARY.get(CHAR_E).size() < 1) ? DICTIONARY.get(CHAR_0).get(0) : DICTIONARY.get(CHAR_E).get(0);
-            case 'F':
-            case 'f':
-                return (DICTIONARY.get(CHAR_F).size() < 1) ? DICTIONARY.get(CHAR_0).get(0) : DICTIONARY.get(CHAR_F).get(0);
-            default:
-                return DICTIONARY.get(CHAR_0).get(0); // Default node is 0. In this case it may be null.
+        final int NODES_AVAILABLE = DICTIONARY.get(getIndexFromDocumentMapper(c)).size();
+        if (NODES_AVAILABLE < 1) {
+            throw new ZeroNodesException("No nodes available for that Document Mapper!");
         }
-    }
-
-    public void printDictionary()
-    {
-        for (int k = 0; k < DICTIONARY.size(); k++) {
-            System.out.println("Assigned nodes for character ==> " + k);
-            System.out.println("\tNodes ==> " + Arrays.toString(DICTIONARY.get(k).toArray(new Node[0])));
+        else {
+            // Select a random node.
+            return DICTIONARY.get(getIndexFromDocumentMapper(c)).get(RandomUtils.nextInt(NODES_AVAILABLE));
         }
-    }
-
-    public NodeInterface getConnection(char c) throws ZeroNodesException
-    {
-        Timer t = new Timer();
-        t.starTimer(); // Start timer.
-        NodeInterface bean = null;
-        int maxtries = 30;
-        int tryCounter = 0;
-
-        while (tryCounter < maxtries) {
-            try {
-                bean = (NodeInterface) RPC.getProxy(NodeInterface.class,
-                                                    NodeInterface.versionID,
-                                                    new InetSocketAddress(getNode(c).getIpAddress(), getNode(c).getPort()),
-                                                    new QuaryConfiguration().create());
-
-                if (bean != null && bean.isUp()) {
-                    t.endTimer(); // Stop the timer.
-                    return bean;
-                }
-            }
-            catch (IOException e) {
-                tryCounter++;
-                LOG.info("Can't connect to node. Try (" + tryCounter + "). Trying again...");
-            }
-        }
-
-        LOG.fatal("Impossible to connect to node. Giving up.");
-
-        return bean;
     }
 }

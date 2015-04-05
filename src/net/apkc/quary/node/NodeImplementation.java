@@ -146,7 +146,7 @@ class NodeImplementation implements NodeInterface
     @Override
     public long version()
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return versionID;
     }
 
     @Override
@@ -156,12 +156,12 @@ class NodeImplementation implements NodeInterface
     }
 
     @Override
-    public int openWriter(Configuration conf, String definitionID)
+    public int openWriter(Configuration conf, String definitionID, char character)
     {
         try {
             // Open an index writer to instance index.
             writer = new IndexWriter(
-                    FSDirectory.open(new File(Constants.INDEX_FILE.getStringConstant() + definitionID)),
+                    FSDirectory.open(new File(Constants.INDEX_FILE.getStringConstant() + definitionID + "." + character)),
                     new IndexWriterConfig(Version.LUCENE_46, EnglishAnalyzer.newBuild().enableFiltering(true).enableStemming(true))
                     .setUseCompoundFile(true)
                     .setSimilarity(new DefaultSimilarity()));

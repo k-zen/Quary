@@ -41,10 +41,15 @@ import net.apkc.emma.tasks.TasksHandler;
 import net.apkc.quary.config.XMLBuilder;
 import net.apkc.quary.definitions.index.IndexDefinitionDB;
 import net.apkc.quary.docs.QuaryDocument;
+import net.apkc.quary.exceptions.InvalidDocumentMapperException;
+import net.apkc.quary.exceptions.InvalidIndexException;
 import net.apkc.quary.exceptions.ServerNotConfiguredException;
+import net.apkc.quary.exceptions.ZeroNodesException;
 import net.apkc.quary.node.NodeChooser;
+import net.apkc.quary.node.NodeConnection;
 import net.apkc.quary.node.NodeInterface;
 import net.apkc.quary.util.QuaryConfiguration;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.Text;
 import org.apache.log4j.Logger;
 
@@ -67,7 +72,7 @@ public class Reactor
 {
 
     private static final Logger LOG = Logger.getLogger(Reactor.class.getName());
-    private final int BUFFER_SIZE = 1024 * 1024 * 15;
+    private final int BUFFER_SIZE = 1024 * 1024 * 10;
     private Selector selector = null;
     private ServerSocketChannel server = null;
     private boolean isConfigured = false;
@@ -82,7 +87,7 @@ public class Reactor
         selector = Selector.open();
         server = ServerSocketChannel.open();
         server.configureBlocking(false);
-        server.socket().bind(new InetSocketAddress("127.0.0.1", port));
+        server.socket().bind(new InetSocketAddress("0.0.0.0", port));
         isConfigured = true;
 
         System.out.println("\tServer configured...");
@@ -177,6 +182,7 @@ public class Reactor
     class Process implements Runnable
     {
 
+        final Configuration CONF = new QuaryConfiguration().create();
         String document;
 
         Process(String document)
@@ -202,18 +208,21 @@ public class Reactor
 
                 // 2. Make the decision where to index the document based on its contents.
                 try {
-                    NodeInterface node = NodeChooser.getInstance().getConnection(doc.getSignature().charAt(0));
+                    NodeInterface node = NodeConnection.getConnection(doc.getSignature().charAt(0));
+                    char documentMapper = (char) NodeChooser.getInstance().getDocumentMapperFromIndex(NodeChooser.getInstance().calculateDictionaryIndex(doc.getSignature().charAt(0)));
 
-                    node.openWriter(new QuaryConfiguration().create(), doc.getDefinitionID());
+                    System.out.printf("%s ==> Node %c\n", doc.getSignature(), documentMapper);
+
+                    node.openWriter(CONF, doc.getDefinitionID(), documentMapper);
                     node.write(new Text(doc.getSignature()), doc, IndexDefinitionDB.read().getDefinition(doc.getDefinitionID()), 0L);
                     node.close(doc.getDefinitionID());
                 }
-                catch (Exception e) {
-                    LOG.error("No nodes available! Error: " + e.toString(), e);
+                catch (ZeroNodesException | InvalidDocumentMapperException | InvalidIndexException e) {
+                    LOG.error("Error communicating with node.", e);
                 }
             }
             catch (Exception ex) {
-                LOG.error("Error processing document.\nDocument: " + document, ex);
+                LOG.error("Error processing document ==> " + document, ex);
             }
         }
     }

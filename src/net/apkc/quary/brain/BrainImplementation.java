@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, Andreas P. Koenzen <akc at apkc.net>
+ * Copyright (c) 2015, Andreas P. Koenzen <akc at apkc.net>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,57 +23,42 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package net.apkc.quary.tasks.init;
+package net.apkc.quary.brain;
 
 import java.io.IOException;
-import net.apkc.emma.tasks.Task;
-import net.apkc.quary.exceptions.ServerNotConfiguredException;
 import net.apkc.quary.node.Node;
 import net.apkc.quary.node.NodeChooser;
-import net.apkc.quary.reactor.Reactor;
-import net.apkc.quary.util.QuaryConfiguration;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.log4j.Logger;
+import org.apache.hadoop.ipc.ProtocolSignature;
 
-/**
- * This is a task that launches the HTTP server.
- *
- * @author K-Zen
- */
-public class ReactorStartTask extends Task
+public class BrainImplementation implements BrainInterface
 {
 
-    private static final Logger LOG = Logger.getLogger(ReactorStartTask.class.getName());
-
-    private ReactorStartTask()
+    @Override
+    public long version()
     {
-    }
-
-    public static ReactorStartTask newBuild()
-    {
-        return new ReactorStartTask();
+        return versionID;
     }
 
     @Override
-    protected Object doInBackground() throws Exception
+    public boolean isUp()
     {
-        try {
-            Configuration conf = new QuaryConfiguration().create();
-            System.out.println("Starting Reactor on port: " + conf.getInt("reactor.port", 14999));
-            System.out.println("\tLooking for nodes...");
-            NodeChooser.getInstance().addNode(Node.newBuild().setIpAddress("127.0.0.1").setPort("15000"));
-
-            Reactor.newBuild().configure(conf.getInt("reactor.port", 14999)).startReactor();
-        }
-        catch (IOException | ServerNotConfiguredException e) {
-            LOG.fatal("Impossible to start the Reactor. Error: " + e.toString(), e);
-        }
-
-        return null;
+        return true;
     }
 
     @Override
-    public void reportProgress(int progress)
+    public void registerNode(Node newNode)
+    {
+        NodeChooser.getInstance().addNode(newNode);
+    }
+
+    @Override
+    public long getProtocolVersion(String string, long l) throws IOException
+    {
+        return versionID;
+    }
+
+    @Override
+    public ProtocolSignature getProtocolSignature(String string, long l, int i) throws IOException
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
