@@ -117,7 +117,7 @@ public class ReactorTesting
         ReactorTesting t = new ReactorTesting();
 
         // Send in 10 bulks of 1000.
-        for (int k = 0; k < 10; k++) {
+        for (int k = 0; k < 100; k++) {
             t.makeConnection();
         }
 

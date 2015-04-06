@@ -51,7 +51,7 @@ public class BrainConnection
         return RPC.getProtocolProxy(BrainInterface.class,
                                     BrainInterface.versionID,
                                     new InetSocketAddress(
-                                            CONF.get("brain.host", "127.0.0.1"),
+                                            CONF.get("brain.host", "lucy.local"),
                                             CONF.getInt("brain.port", 14998)),
                                     UserGroupInformation.getCurrentUser(),
                                     CONF,

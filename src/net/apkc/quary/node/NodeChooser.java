@@ -48,7 +48,8 @@ public final class NodeChooser
 {
 
     private static final Logger LOG = Logger.getLogger(NodeChooser.class.getName());
-    private final List<List<Node>> DICTIONARY = new ArrayList<>(16);
+    private static final Integer DICTIONARY_SIZE = 16;
+    private final List<List<Node>> DICTIONARY = new ArrayList<>(DICTIONARY_SIZE);
     private final List<Node> NODES = new ArrayList<>();
     private Integer lastNode = 0;
     private static final NodeChooser INSTANCE = new NodeChooser();
@@ -81,7 +82,7 @@ public final class NodeChooser
     {
         DICTIONARY.clear();
 
-        for (int k = 0; k < 16; k++) {
+        for (int k = 0; k < DICTIONARY_SIZE; k++) {
             DICTIONARY.add(k, new ArrayList<>());
         }
     }
@@ -97,7 +98,7 @@ public final class NodeChooser
      */
     public int calculateDictionaryIndex(final int DOCUMENT_MAPPER) throws InvalidDocumentMapperException
     {
-        return Math.abs((((getIndexFromDocumentMapper(DOCUMENT_MAPPER) + 1) % lastNode) - 16) % 16);
+        return Math.abs((((getIndexFromDocumentMapper(DOCUMENT_MAPPER) + 1) % lastNode) - DICTIONARY_SIZE) % DICTIONARY_SIZE);
     }
 
     /**
@@ -204,7 +205,7 @@ public final class NodeChooser
             synchronized (DICTIONARY) {
                 resetDictionary();
                 NODES.stream().forEach((n) -> {
-                    List<Node> l = DICTIONARY.get(Math.abs(((n.getNodeID() % lastNode) - 16) % 16));
+                    List<Node> l = DICTIONARY.get(Math.abs(((n.getNodeID() % lastNode) - DICTIONARY_SIZE) % DICTIONARY_SIZE));
                     l.add(n);
                 });
             }
@@ -216,7 +217,7 @@ public final class NodeChooser
                 LOG.info("* Nodes Hive ==>");
                 for (int k = 0; k < DICTIONARY.size(); k++) {
                     try {
-                        LOG.info("\t" + ((char) getDocumentMapperFromIndex(k)) + " ==> " + Arrays.toString(DICTIONARY.get(k).toArray(new Node[0])));
+                        LOG.info("\t" + ((char) getDocumentMapperFromIndex(k)) + (k == 0 ? " *CatchAll*" : "") + " ==> " + Arrays.toString(DICTIONARY.get(k).toArray(new Node[0])));
                     }
                     catch (Exception e) {
                         LOG.info("\tError printing this index.");
@@ -226,6 +227,11 @@ public final class NodeChooser
         }
     }
 
+    /**
+     * This method will remove a node from the hive.
+     *
+     * @param node The node to remove.
+     */
     private synchronized void removeNode(Node node)
     {
         int currentNodeID = lastNode - 1;
@@ -238,7 +244,7 @@ public final class NodeChooser
             synchronized (DICTIONARY) {
                 resetDictionary();
                 NODES.stream().forEach((n) -> {
-                    List<Node> l = DICTIONARY.get(Math.abs(((n.getNodeID() % lastNode) - 16) % 16));
+                    List<Node> l = DICTIONARY.get(Math.abs(((n.getNodeID() % lastNode) - DICTIONARY_SIZE) % DICTIONARY_SIZE));
                     l.add(n);
                 });
             }
@@ -250,7 +256,7 @@ public final class NodeChooser
                 LOG.info("* Nodes Hive ==>");
                 for (int k = 0; k < DICTIONARY.size(); k++) {
                     try {
-                        LOG.info("\t" + ((char) getDocumentMapperFromIndex(k)) + " ==> " + Arrays.toString(DICTIONARY.get(k).toArray(new Node[0])));
+                        LOG.info("\t" + ((char) getDocumentMapperFromIndex(k)) + (k == 0 ? " *CatchAll*" : "") + " ==> " + Arrays.toString(DICTIONARY.get(k).toArray(new Node[0])));
                     }
                     catch (Exception e) {
                         LOG.info("\tError printing this index.");
@@ -277,7 +283,8 @@ public final class NodeChooser
 
         final int NODES_AVAILABLE = DICTIONARY.get(getIndexFromDocumentMapper(C)).size();
         if (NODES_AVAILABLE < 1) {
-            throw new ZeroNodesException("No nodes available for that Document Mapper!");
+            // Document Mapper 0 is *CatchAll*.
+            return DICTIONARY.get(getIndexFromDocumentMapper('0')).get(RandomUtils.nextInt(DICTIONARY.get(getIndexFromDocumentMapper('0')).size()));
         }
         else {
             return DICTIONARY.get(getIndexFromDocumentMapper(C)).get(RandomUtils.nextInt(NODES_AVAILABLE));

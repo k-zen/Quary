@@ -4,7 +4,7 @@
     <!-- Brain: -->
     <property>
         <name>brain.host</name>
-        <value>127.0.0.1</value>
+        <value>lucy.local</value>
         <description>
             Where the Brain is.
         </description>
