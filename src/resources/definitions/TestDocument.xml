@@ -24,7 +24,7 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 -->
-<root definitionID="000000000000">
+<root definitionID="000">
     <anchor>Test</anchor>
     <boost>1.0</boost>
     <boostwithgravity>1.0</boostwithgravity>

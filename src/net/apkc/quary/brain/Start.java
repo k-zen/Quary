@@ -58,7 +58,7 @@ public class Start
                     IndexDefinitionDB
                             .update(IndexDefinitionDB
                                     .read()
-                                    .addDefinition("000000000000", XMLBuilder.parseDefinitionFile(Start.class.getResourceAsStream(Constants.TEST_DEFINITION.getStringConstant()))));
+                                    .addDefinition("000", XMLBuilder.parseDefinitionFile(Start.class.getResourceAsStream(Constants.TEST_DEFINITION.getStringConstant()))));
 
                     System.out.printf("Starting Reactor...\n");
                     System.out.printf("\tPort: %d\n", REACTOR_PORT);

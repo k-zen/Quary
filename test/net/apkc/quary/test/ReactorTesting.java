@@ -76,7 +76,7 @@ public class ReactorTesting
     {
         StringBuilder buffer = new StringBuilder();
         buffer
-                .append("<root definitionID=\"000000000000\" id=\"").append(k + 1).append("\">")
+                .append("<root definitionID=\"000\" id=\"").append(k + 1).append("\">")
                 .append("<anchor>Test</anchor>")
                 .append("<boost>1.0</boost>")
                 .append("<boostwithgravity>1.0</boostwithgravity>")
@@ -117,7 +117,7 @@ public class ReactorTesting
         ReactorTesting t = new ReactorTesting();
 
         // Send in 10 bulks of 1000.
-        for (int k = 0; k < 100; k++) {
+        for (int k = 0; k < 10; k++) {
             t.makeConnection();
         }
 
