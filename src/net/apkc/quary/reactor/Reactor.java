@@ -41,10 +41,9 @@ import net.apkc.emma.tasks.TasksHandler;
 import net.apkc.quary.config.XMLBuilder;
 import net.apkc.quary.definitions.index.IndexDefinitionDB;
 import net.apkc.quary.docs.QuaryDocument;
-import net.apkc.quary.exceptions.InvalidDocumentMapperException;
-import net.apkc.quary.exceptions.InvalidIndexException;
 import net.apkc.quary.exceptions.ServerNotConfiguredException;
 import net.apkc.quary.exceptions.ZeroNodesException;
+import net.apkc.quary.node.Node;
 import net.apkc.quary.node.NodeChooser;
 import net.apkc.quary.node.NodeConnection;
 import net.apkc.quary.node.NodeInterface;
@@ -202,22 +201,16 @@ public class Reactor
             }
 
             try {
-                // Steps:
-                // 1. Process the XML document (Convert it to a QuaryDocument)
                 QuaryDocument doc = XMLBuilder.parseExternalDocumentToQuaryDocument(document);
 
-                // 2. Make the decision where to index the document based on its contents.
                 try {
-                    NodeInterface node = NodeConnection.getConnection(doc.getSignature().charAt(0));
-                    char documentMapper = (char) NodeChooser.getInstance().getDocumentMapperFromIndex(NodeChooser.getInstance().calculateDictionaryIndex(doc.getSignature().charAt(0)));
-
-                    System.out.printf("%s ==> Node %c\n", doc.getSignature(), documentMapper);
-
-                    node.openWriter(CONF, doc.getDefinitionID(), documentMapper);
-                    node.write(new Text(doc.getSignature()), doc, IndexDefinitionDB.read().getDefinition(doc.getDefinitionID()), 0L);
-                    node.close(doc.getDefinitionID());
+                    Node node = NodeChooser.getInstance().getNode();
+                    NodeInterface conn = NodeConnection.getConnection(node);
+                    conn.openWriter(CONF, doc.getDefinitionID(), node);
+                    conn.write(new Text(doc.getSignature()), doc, IndexDefinitionDB.read().getDefinition(doc.getDefinitionID()), 0L);
+                    conn.close(doc.getDefinitionID());
                 }
-                catch (ZeroNodesException | InvalidDocumentMapperException | InvalidIndexException e) {
+                catch (IOException | ZeroNodesException e) {
                     LOG.error("Error communicating with node.", e);
                 }
             }

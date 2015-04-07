@@ -40,7 +40,7 @@ public final class Node extends QuaryWritable
 {
 
     private static final Logger LOG = Logger.getLogger(Node.class.getName());
-    private int nodeID = -1;
+    private String nodeID = "";
     private String ipAddress = "";
     private int port = 15000;
 
@@ -49,13 +49,17 @@ public final class Node extends QuaryWritable
         return new Node();
     }
 
-    Node setNodeID(int nodeID)
+    Node setNodeID(String newString)
     {
-        this.nodeID = nodeID;
+        if (newString == null || newString.isEmpty()) {
+            return this;
+        }
+
+        this.nodeID = newString;
         return this;
     }
 
-    int getNodeID()
+    String getNodeID()
     {
         return nodeID;
     }
@@ -108,7 +112,7 @@ public final class Node extends QuaryWritable
     @Override
     public void internalWrite(DataOutput out) throws IOException
     {
-        out.writeInt(nodeID);
+        out.writeUTF(nodeID);
         out.writeUTF(ipAddress);
         out.writeInt(port);
     }
@@ -116,41 +120,16 @@ public final class Node extends QuaryWritable
     @Override
     public void internalRead(DataInput in) throws IOException
     {
-        nodeID = in.readInt();
+        nodeID = in.readUTF();
         ipAddress = in.readUTF();
         port = in.readInt();
     }
 
-    /**
-     * Will return &lt; 0 if this.nodeID precedes o.nodeID.
-     *
-     * <p>
-     * The sorting order (ascending | descending) will be in charge of the collection,
-     * according to the natural ordering. Since the elements taking into
-     * account for ordering in this case are Integers, the natural order
-     * will be numerically ascending.
-     * </p>
-     *
-     * <p>
-     * <b>Example:</b>
-     * <pre>
-     * 1
-     * 2
-     * 3
-     * ...
-     * </pre>
-     * </p>
-     *
-     * @param o The other object to compare.
-     *
-     * @return -1 if this object precedes the other attribute, 0 if they are
-     *         equal, and 1 if this object supercedes the other object.
-     */
     @Override
     public int compareTo(QuaryWritable o)
     {
-        Node n = (Node) o;
-        return this.nodeID == n.nodeID ? 0 : (this.nodeID < n.nodeID ? -1 : 1);
+        Node otherNode = (Node) o;
+        return this.nodeID.compareTo(otherNode.nodeID);
     }
 
     @Override
@@ -168,9 +147,9 @@ public final class Node extends QuaryWritable
     public int hashCode()
     {
         int hash = 0x54;
-        hash ^= (nodeID);
-        hash ^= (ipAddress != null) ? ipAddress.hashCode() : 0x0;
-        hash ^= (port);
+        hash ^= nodeID != null ? nodeID.hashCode() : 0x0;
+        hash ^= ipAddress != null ? ipAddress.hashCode() : 0x0;
+        hash ^= port;
 
         return hash;
     }

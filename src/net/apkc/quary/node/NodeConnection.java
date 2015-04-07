@@ -27,7 +27,6 @@ package net.apkc.quary.node;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import net.apkc.quary.exceptions.InvalidDocumentMapperException;
 import net.apkc.quary.exceptions.ZeroNodesException;
 import net.apkc.quary.util.QuaryConfiguration;
 import org.apache.hadoop.conf.Configuration;
@@ -44,21 +43,20 @@ public class NodeConnection
      * Establish a live connection a given node.
      * TODO: Find a way to add a custom RetryPolicy, like: <code>RetryPolicies.retryUpToMaximumCountWithFixedSleep(CONF.getInt("node.connection.maxretries", 4),CONF.getInt("node.connection.sleeptime", 5),TimeUnit.SECONDS)</code>
      *
-     * @param c The first character of the document to handle. Based on this we know where to index.
+     * @param node The node where to open the connection to.
      *
      * @return A NodeInterface object. It can be used to interact with the node.
      *
-     * @throws ZeroNodesException             If no nodes was found.
-     * @throws InvalidDocumentMapperException If the Document Mapper is invalid.
-     * @throws IOException                    If a connection wasn't possible.
+     * @throws ZeroNodesException If no nodes was found.
+     * @throws IOException        If a connection wasn't possible.
      */
-    public static NodeInterface getConnection(char c) throws ZeroNodesException, InvalidDocumentMapperException, IOException
+    public static NodeInterface getConnection(Node node) throws IOException, ZeroNodesException
     {
         return RPC.getProtocolProxy(NodeInterface.class,
                                     NodeInterface.versionID,
                                     new InetSocketAddress(
-                                            NodeChooser.getInstance().getNode(c).getIpAddress(),
-                                            NodeChooser.getInstance().getNode(c).getPort()),
+                                            node.getIpAddress(),
+                                            node.getPort()),
                                     UserGroupInformation.getCurrentUser(),
                                     CONF,
                                     NetUtils.getDefaultSocketFactory(CONF),

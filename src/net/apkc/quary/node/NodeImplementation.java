@@ -156,12 +156,12 @@ class NodeImplementation implements NodeInterface
     }
 
     @Override
-    public int openWriter(Configuration conf, String definitionID, char character)
+    public int openWriter(Configuration conf, String definitionID, Node node)
     {
         try {
             // Open an index writer to instance index.
             writer = new IndexWriter(
-                    FSDirectory.open(new File(Constants.INDEX_FILE.getStringConstant() + definitionID + "." + character)),
+                    FSDirectory.open(new File(Constants.INDEX_FILE.getStringConstant() + definitionID + "." + node.getNodeID())),
                     new IndexWriterConfig(Version.LUCENE_46, EnglishAnalyzer.newBuild().enableFiltering(true).enableStemming(true))
                     .setUseCompoundFile(true)
                     .setSimilarity(new DefaultSimilarity()));
