@@ -56,7 +56,7 @@ public interface NodeInterface extends VersionedProtocol
      *
      * @return 0 if the operation was completed without errors, &gt;0 otherwise.
      */
-    public int close(String definitionID);
+    public int close(String definitionID, Node node);
 
     /**
      * Returns the version of the node.
@@ -101,12 +101,13 @@ public interface NodeInterface extends VersionedProtocol
      *
      * @param conf   Configuration file.
      * @param def    The definition object to use.
+     * @param node   The node where the writer is at.
      * @param params The object containing the search parameters.
      *
      * @return The response in XML format, but encapsulated in an Hadoop Text
      *         object.
      */
-    public Text search(Configuration conf, IndexDefinition def, Parameters params);
+    public Text search(Configuration conf, IndexDefinition def, Node node, Parameters params);
 
     /**
      * This method checks if the only reader to the kernel is open, and if it is
@@ -123,7 +124,7 @@ public interface NodeInterface extends VersionedProtocol
      *
      * @return TRUE if the reader is open, FALSE otherwise.
      */
-    public boolean areSearchersOpen(boolean reOpenReaders, String definitionID);
+    public boolean areSearchersOpen(boolean reOpenReaders, String definitionID, Node node);
 
     /**
      * This method cleans/deletes up all the files in the kernel index.
@@ -132,5 +133,5 @@ public interface NodeInterface extends VersionedProtocol
      *
      * @return TRUE if the files had been deleted, FALSE otherwise.
      */
-    public boolean cleanIndex(String definitionID);
+    public boolean cleanIndex(String definitionID, Node node);
 }

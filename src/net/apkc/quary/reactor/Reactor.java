@@ -208,7 +208,7 @@ public class Reactor
                     NodeInterface conn = NodeConnection.getConnection(node);
                     conn.openWriter(CONF, doc.getDefinitionID(), node);
                     conn.write(new Text(doc.getSignature()), doc, IndexDefinitionDB.read().getDefinition(doc.getDefinitionID()), 0L);
-                    conn.close(doc.getDefinitionID());
+                    conn.close(doc.getDefinitionID(), node);
                 }
                 catch (IOException | ZeroNodesException e) {
                     LOG.error("Error communicating with node.", e);

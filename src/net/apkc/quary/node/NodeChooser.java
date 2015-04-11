@@ -28,7 +28,6 @@ package net.apkc.quary.node;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -75,8 +74,10 @@ public final class NodeChooser
      */
     public synchronized void addNode(Node node)
     {
+        final String NODE_ID = DigestUtils.md5Hex(node.getIpAddress() + node.getPort()).substring(0, 24);
+
         synchronized (NODES) {
-            NODES.add(node.setNodeID(DigestUtils.md5Hex(new Date().toString()).substring(0, 24)));
+            NODES.add(node.setNodeID(NODE_ID));
 
             if (LOG.isInfoEnabled()) {
                 LOG.info("****** NEW NODE ******");
@@ -113,9 +114,9 @@ public final class NodeChooser
     }
 
     /**
-     * Given a character, it will return the node that corresponds to that character.
+     * Return a node from the pool.
      *
-     * @return The node where that character belongs.
+     * @return A random node.
      *
      * @throws ZeroNodesException If no nodes was found.
      */
@@ -126,6 +127,22 @@ public final class NodeChooser
         }
 
         return NODES.get(RandomUtils.nextInt(NODES.size()));
+    }
+
+    /**
+     * Return all nodes from the pool.
+     *
+     * @return All nodes from the pool.
+     *
+     * @throws ZeroNodesException If no nodes was found.
+     */
+    public Node[] getNodes() throws ZeroNodesException
+    {
+        if (NODES.isEmpty()) {
+            throw new ZeroNodesException("No nodes available!");
+        }
+
+        return NODES.toArray(new Node[0]);
     }
 
     public class Ping implements Runnable

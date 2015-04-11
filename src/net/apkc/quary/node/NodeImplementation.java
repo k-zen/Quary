@@ -120,7 +120,7 @@ class NodeImplementation implements NodeInterface
     }
 
     @Override
-    public int close(String definitionID)
+    public int close(String definitionID, Node node)
     {
         try {
             if (writer != null) {
@@ -129,7 +129,7 @@ class NodeImplementation implements NodeInterface
             }
 
             // The index has changed, so update the readers.
-            if (areSearchersOpen(true, definitionID)) {
+            if (areSearchersOpen(true, definitionID, node)) {
                 if (LOG.isInfoEnabled()) {
                     LOG.info("Index changed: All readers where updated.");
                 }
@@ -347,7 +347,7 @@ class NodeImplementation implements NodeInterface
     }
 
     @Override
-    public Text search(Configuration conf, IndexDefinition def, Parameters params)
+    public Text search(Configuration conf, IndexDefinition def, Node node, Parameters params)
     {
         StringBuilder xml = new StringBuilder();
         Query query;
@@ -363,7 +363,7 @@ class NodeImplementation implements NodeInterface
         List<String> sf = new ArrayList<>();
 
         try {
-            searcher = getOpenSearcher(def.getDefinitionID());
+            searcher = getOpenSearcher(def.getDefinitionID(), node);
             if (!searcher.getIsOpen()) {
                 xml.append(Result.dummyResult(timer.computeOperationTime(Timer.Time.SECOND)));
 
@@ -517,10 +517,10 @@ class NodeImplementation implements NodeInterface
     }
 
     @Override
-    public boolean areSearchersOpen(boolean reOpenReaders, String definitionID)
+    public boolean areSearchersOpen(boolean reOpenReaders, String definitionID, Node node)
     {
         // First try to open readers.
-        openSearchers(reOpenReaders, definitionID);
+        openSearchers(reOpenReaders, definitionID, node);
 
         synchronized (SEARCHERS) {
             ListIterator<IndexSearcher> i = SEARCHERS.listIterator();
@@ -554,14 +554,14 @@ class NodeImplementation implements NodeInterface
     }
 
     @Override
-    public boolean cleanIndex(String definitionID)
+    public boolean cleanIndex(String definitionID, Node node)
     {
         if (writer != null) {
             return false;
         }
 
-        if (GeneralUtilities.directoryExists(Constants.INDEX_FILE.getStringConstant() + definitionID)) {
-            if (!GeneralUtilities.deleteDirectoryContents(Constants.INDEX_FILE.getStringConstant() + definitionID, true)) {
+        if (GeneralUtilities.directoryExists(Constants.INDEX_FILE.getStringConstant() + definitionID + "." + node.getNodeID())) {
+            if (!GeneralUtilities.deleteDirectoryContents(Constants.INDEX_FILE.getStringConstant() + definitionID + "." + node.getNodeID(), true)) {
                 return false;
             }
         }
@@ -588,13 +588,13 @@ class NodeImplementation implements NodeInterface
      *
      * @throws IOException
      */
-    protected static Searcher getOpenSearcher(String definitionID) throws IOException
+    protected static Searcher getOpenSearcher(String definitionID, Node node) throws IOException
     {
         if (writer == null) {
-            openSearchers(false, definitionID);
+            openSearchers(false, definitionID, node);
 
             // Check if there is an index available.
-            if (!DirectoryReader.indexExists(FSDirectory.open(new File(Constants.INDEX_FILE.getStringConstant() + definitionID)))) {
+            if (!DirectoryReader.indexExists(FSDirectory.open(new File(Constants.INDEX_FILE.getStringConstant() + definitionID + "." + node.getNodeID())))) {
                 return Searcher
                         .newBuild()
                         .setIsOpen(false)
@@ -625,7 +625,7 @@ class NodeImplementation implements NodeInterface
         else {
             synchronized (writer) {
                 // Check if there is an index available.
-                if (!DirectoryReader.indexExists(FSDirectory.open(new File(Constants.INDEX_FILE.getStringConstant() + definitionID)))) {
+                if (!DirectoryReader.indexExists(FSDirectory.open(new File(Constants.INDEX_FILE.getStringConstant() + definitionID + "." + node.getNodeID())))) {
                     return Searcher
                             .newBuild()
                             .setIsOpen(false)
@@ -651,11 +651,11 @@ class NodeImplementation implements NodeInterface
      *                        searchers to the index, FALSE we leave them
      *                        alone.
      */
-    static void openSearchers(boolean reOpenSearchers, String definitionID)
+    static void openSearchers(boolean reOpenSearchers, String definitionID, Node node)
     {
         if (SEARCHERS.isEmpty() && !reOpenSearchers) {
             try {
-                FSDirectory dir = FSDirectory.open(new File(Constants.INDEX_FILE.getStringConstant() + definitionID));
+                FSDirectory dir = FSDirectory.open(new File(Constants.INDEX_FILE.getStringConstant() + definitionID + "." + node.getNodeID()));
 
                 // Only open the reader if there is an index.
                 if (DirectoryReader.indexExists(dir)) {
