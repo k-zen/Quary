@@ -60,7 +60,7 @@ public class Start
             System.out.printf("\tHandlers: %d\n", NODE_HANDLERS);
             System.out.printf("\tQueue Size Per Handler: %d\n", NODE_QUEUE_SIZE_PER_HANDLER);
             System.out.printf("\tReaders: %d\n", NODE_READERS);
-            System.out.printf("\tRegistering node with *Brain*.\n");
+            System.out.printf("\tRegistering node with *Brain* at address *%s:%d*.\n", CONF.get("brain.host", "lucy.local"), CONF.getInt("brain.port", 14998));
             BrainConnection
                     .getConnection()
                     .registerNode(Node
