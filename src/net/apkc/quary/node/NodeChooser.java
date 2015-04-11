@@ -25,13 +25,22 @@
  */
 package net.apkc.quary.node;
 
+import io.aime.aimemisc.io.FileStoring;
+import java.io.File;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import net.apkc.quary.exceptions.ZeroNodesException;
+import net.apkc.quary.util.Constants;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.math.RandomUtils;
 import org.apache.log4j.Logger;
@@ -46,14 +55,33 @@ public final class NodeChooser
 {
 
     private static final Logger LOG = Logger.getLogger(NodeChooser.class.getName());
-    private final List<Node> NODES = new ArrayList<>();
     private static final NodeChooser INSTANCE = new NodeChooser();
+    private final ArrayList<Node> NODES;
 
     /**
      * Private default constructor.
      */
     private NodeChooser()
     {
+        Object data = null;
+        try {
+            data = FileStoring.getInstance().readFromFile(
+                    new File(Constants.NODES_DB_FILE.getStringConstant()),
+                    false,
+                    null,
+                    "UTF-8");
+        }
+        catch (IOException | ClassNotFoundException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException e) {
+            LOG.warn("Problem reading object from file.", e);
+        }
+        finally {
+            if (data != null) {
+                NODES = (ArrayList<Node>) data;
+            }
+            else {
+                NODES = new ArrayList<>();
+            }
+        }
     }
 
     /**
@@ -88,6 +116,13 @@ public final class NodeChooser
                     LOG.info("\t" + n.toString());
                 });
             }
+
+            FileStoring.getInstance().writeToFile(
+                    new File(Constants.NODES_DB_FILE.getStringConstant()),
+                    NODES,
+                    false,
+                    null,
+                    "UTF-8");
         }
     }
 
@@ -110,6 +145,13 @@ public final class NodeChooser
                     LOG.info("\t" + n.toString());
                 });
             }
+
+            FileStoring.getInstance().writeToFile(
+                    new File(Constants.NODES_DB_FILE.getStringConstant()),
+                    NODES,
+                    false,
+                    null,
+                    "UTF-8");
         }
     }
 

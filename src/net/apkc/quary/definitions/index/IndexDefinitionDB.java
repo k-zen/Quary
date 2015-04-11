@@ -26,14 +26,16 @@
 package net.apkc.quary.definitions.index;
 
 import io.aime.aimemisc.io.FileStoring;
-import java.io.Externalizable;
 import java.io.File;
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.TreeMap;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import net.apkc.quary.util.Constants;
-import net.apkc.quary.util.SerializationUtils;
+import org.apache.log4j.Logger;
 
 /**
  * Indexed file based database for storing definitions. This database should be able
@@ -72,75 +74,84 @@ import net.apkc.quary.util.SerializationUtils;
  * @author Andreas P. Koenzen <akc@apkc.net>
  * @version 1.0
  */
-public final class IndexDefinitionDB implements Externalizable
+public final class IndexDefinitionDB
 {
 
-    // Instance.
-    private static volatile IndexDefinitionDB instance = new IndexDefinitionDB();
-    private static volatile boolean isEmpty = true; // Mark if this instance is empty. If TRUE then we must load data from file.
-    private static TreeMap<String, IndexDefinition> definitions = new TreeMap<>();
+    private static final Logger LOG = Logger.getLogger(IndexDefinitionDB.class.getName());
+    private static final IndexDefinitionDB INSTANCE = new IndexDefinitionDB();
+    private final TreeMap<String, IndexDefinition> DEFINITIONS;
 
-    public IndexDefinitionDB()
+    /**
+     * Private default constructor.
+     */
+    private IndexDefinitionDB()
     {
-    }
-
-    public static IndexDefinitionDB getInstance()
-    {
-        return instance;
-    }
-
-    private void updateInstance(IndexDefinitionDB newInstance)
-    {
-        if (newInstance != null) {
-            instance = newInstance;
+        Object data = null;
+        try {
+            data = FileStoring.getInstance().readFromFile(
+                    new File(Constants.DEFINITION_DB_FILE.getStringConstant()),
+                    false,
+                    null,
+                    "UTF-8");
+        }
+        catch (IOException | ClassNotFoundException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException e) {
+            LOG.warn("Problem reading object from file.", e);
+        }
+        finally {
+            if (data != null) {
+                DEFINITIONS = (TreeMap<String, IndexDefinition>) data;
+            }
+            else {
+                DEFINITIONS = new TreeMap<>();
+            }
         }
     }
 
+    /**
+     * Returns the only instance of this class.
+     *
+     * @return The only instance of class.
+     */
+    public static IndexDefinitionDB getInstance()
+    {
+        return INSTANCE;
+    }
+
+    /**
+     * Add a new definition to the DB.
+     *
+     * @param key The key of the definition.
+     * @param def The definition object.
+     *
+     * @return This instance.
+     */
     public IndexDefinitionDB addDefinition(String key, IndexDefinition def)
     {
-        definitions.put(key, def);
+        synchronized (DEFINITIONS) {
+            DEFINITIONS.put(key, def);
+
+            FileStoring.getInstance().writeToFile(
+                    new File(Constants.DEFINITION_DB_FILE.getStringConstant()),
+                    DEFINITIONS,
+                    false,
+                    null,
+                    "UTF-8");
+        }
+
         return this;
     }
 
+    /**
+     * Returns the definition that corresponds to the key.
+     *
+     * @param key The key to search.
+     *
+     * @return The definition object.
+     */
     public IndexDefinition getDefinition(String key)
     {
-        return definitions.get(key);
-    }
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException
-    {
-        out.writeObject(definitions);
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
-    {
-        definitions = SerializationUtils.<TreeMap<String, IndexDefinition>>readObject(in);
-    }
-
-    public static IndexDefinitionDB read()
-    {
-        if (isEmpty) {
-            File f = new File(Constants.DEFINITION_DB_FILE.getStringConstant());
-            getInstance().updateInstance((IndexDefinitionDB) FileStoring.getInstance().readFromFile(
-                    f,
-                    true,
-                    Constants.ENCRYPTION_KEY.getStringConstant(),
-                    Constants.DEFAULT_CHAR_ENCODING.getStringConstant()));
-            isEmpty = false;
+        synchronized (DEFINITIONS) {
+            return DEFINITIONS.get(key);
         }
-
-        return getInstance();
-    }
-
-    public static void update(IndexDefinitionDB data)
-    {
-        FileStoring.getInstance().writeToFile(
-                new File(Constants.DEFINITION_DB_FILE.getStringConstant()),
-                data,
-                true,
-                Constants.ENCRYPTION_KEY.getStringConstant(),
-                Constants.DEFAULT_CHAR_ENCODING.getStringConstant());
     }
 }

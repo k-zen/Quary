@@ -38,8 +38,9 @@ public enum Constants
     TEST_DEFINITION("/resources/definitions/TestDefinition.xml"),
     XSD_SCHEMA_FILE("/resources/definitions/Schema.xsd"),
     // Paths
-    DEFINITION_DB_FILE("/Quary/data/definition_db"),
-    INDEX_FILE("/Quary/data/index."),
+    DEFINITION_DB_FILE("/Quary/data/definitions.dat"),
+    NODES_DB_FILE("/Quary/data/nodes.dat"),
+    INDEX_FILE("/Quary/data/index/index."),
     LOGS_PATH("/Quary/logs"),
     TMP_PATH("/Quary/tmp"),
     // Encryption

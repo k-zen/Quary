@@ -55,10 +55,7 @@ public class Start
                 try {
                     final Integer REACTOR_PORT = CONF.getInt("reactor.port", 14999);
 
-                    IndexDefinitionDB
-                            .update(IndexDefinitionDB
-                                    .read()
-                                    .addDefinition("000", XMLBuilder.parseDefinitionFile(Start.class.getResourceAsStream(Constants.TEST_DEFINITION.getStringConstant()))));
+                    IndexDefinitionDB.getInstance().addDefinition("000", XMLBuilder.parseDefinitionFile(Start.class.getResourceAsStream(Constants.TEST_DEFINITION.getStringConstant())));
 
                     System.out.printf("Starting Reactor...\n");
                     System.out.printf("\tPort: %d\n", REACTOR_PORT);
