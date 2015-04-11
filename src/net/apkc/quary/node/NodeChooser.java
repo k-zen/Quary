@@ -103,14 +103,20 @@ public final class NodeChooser
     public synchronized void addNode(Node node)
     {
         final String NODE_ID = DigestUtils.md5Hex(node.getIpAddress() + node.getPort()).substring(0, 24);
+        final Node NEW_NODE = node.setNodeID(NODE_ID);
 
         synchronized (NODES) {
-            NODES.add(node.setNodeID(NODE_ID));
+            if (!NODES.contains(NEW_NODE)) {
+                NODES.add(NEW_NODE);
+            }
+            else {
+                return;
+            }
 
             if (LOG.isInfoEnabled()) {
                 LOG.info("****** NEW NODE ******");
-                LOG.info("* Host ==> " + node.getIpAddress());
-                LOG.info("* Port ==> " + node.getPort());
+                LOG.info("* Host ==> " + NEW_NODE.getIpAddress());
+                LOG.info("* Port ==> " + NEW_NODE.getPort());
                 LOG.info("* Nodes Hive ==>");
                 NODES.stream().forEach((Node n) -> {
                     LOG.info("\t" + n.toString());
