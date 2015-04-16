@@ -35,6 +35,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import net.apkc.quary.util.Constants;
+import net.apkc.quary.util.SerializationUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -99,7 +100,7 @@ public final class IndexDefinitionDB
         }
         finally {
             if (data != null) {
-                DEFINITIONS = (TreeMap<String, IndexDefinition>) data;
+                DEFINITIONS = SerializationUtils.<TreeMap<String, IndexDefinition>>castObject(data);
             }
             else {
                 DEFINITIONS = new TreeMap<>();

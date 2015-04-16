@@ -53,4 +53,18 @@ public final class SerializationUtils
     {
         return (T) in.readObject();
     }
+
+    /**
+     * Reads an object from an input and converts it to the appropriate type.
+     *
+     * @param <T> The type of object to return.
+     * @param ob  The object to cast.
+     *
+     * @return The casted object.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T castObject(Object ob)
+    {
+        return (T) ob;
+    }
 }

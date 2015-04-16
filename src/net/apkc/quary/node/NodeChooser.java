@@ -41,6 +41,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import net.apkc.quary.exceptions.ZeroNodesException;
 import net.apkc.quary.util.Constants;
+import net.apkc.quary.util.SerializationUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.math.RandomUtils;
 import org.apache.log4j.Logger;
@@ -76,7 +77,7 @@ public final class NodeChooser
         }
         finally {
             if (data != null) {
-                NODES = (ArrayList<Node>) data;
+                NODES = SerializationUtils.<ArrayList<Node>>castObject(data);
             }
             else {
                 NODES = new ArrayList<>();
