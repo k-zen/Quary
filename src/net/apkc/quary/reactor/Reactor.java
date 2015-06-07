@@ -76,6 +76,10 @@ public class Reactor
     private ServerSocketChannel server = null;
     private boolean isConfigured = false;
 
+    private Reactor()
+    {
+    }
+
     public static Reactor newBuild()
     {
         return new Reactor();
@@ -152,7 +156,7 @@ public class Reactor
                     }
                     catch (IOException | InterruptedException | ExecutionException ex) {
                         LOG.fatal("Reactor Error.", ex);
-                        System.out.println("\tA fatal error has occurred and the Reactor will be shutdown...");
+                        System.out.println("\tA fatal error has occurred and the Reactor will shutdown...");
                         System.exit(1);
                     }
                 }
