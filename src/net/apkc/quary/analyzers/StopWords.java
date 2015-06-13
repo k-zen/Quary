@@ -28,9 +28,10 @@ package net.apkc.quary.analyzers;
 import org.apache.commons.lang.ArrayUtils;
 
 /**
- * List of stop words in all languages supported by AIME.
+ * List of stop words in all languages supported by Quary.
  *
- * @author K-Zen
+ * @author Andreas P. Koenzen <akc at apkc.net>
+ * @version 0.1
  */
 public class StopWords
 {

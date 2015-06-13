@@ -46,7 +46,8 @@ import org.apache.log4j.Logger;
  * value can't be 0.0f or it'll break the entire scoring system.
  * </p>
  *
- * @author K-Zen
+ * @author Andreas P. Koenzen <akc at apkc.net>
+ * @version 0.1
  */
 public class QuaryField implements Writable
 {

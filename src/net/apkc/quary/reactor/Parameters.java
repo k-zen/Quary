@@ -39,7 +39,8 @@ import org.apache.hadoop.io.Writable;
  * An instance of this class represents the parameters sent by the user for
  * performing a search.
  *
- * @author K-Zen
+ * @author Andreas P. Koenzen <akc at apkc.net>
+ * @version 0.1
  */
 public final class Parameters implements Writable
 {
@@ -146,6 +147,8 @@ public final class Parameters implements Writable
      * @param queryString The query string to be searched.
      *
      * @return This object.
+     *
+     * @throws net.apkc.quary.exceptions.IncompleteSearchParametersException
      */
     public Parameters setQueryString(String queryString) throws IncompleteSearchParametersException
     {

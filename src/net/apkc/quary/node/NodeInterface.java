@@ -33,10 +33,10 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.ipc.VersionedProtocol;
 
 /**
- * Interface for DILI nodes. All DILI nodes must implement this interface.
+ * Interface for Quary nodes. All Quary nodes must implement this interface.
  *
- * @author Andreas P. Koenzen
- * @version 1.0
+ * @author Andreas P. Koenzen <akc at apkc.net>
+ * @version 0.1
  */
 public interface NodeInterface extends VersionedProtocol
 {
@@ -53,6 +53,7 @@ public interface NodeInterface extends VersionedProtocol
      * out of service.
      *
      * @param definitionID The ID of the index.
+     * @param node         The node to close.
      *
      * @return 0 if the operation was completed without errors, &gt;0 otherwise.
      */
@@ -121,6 +122,7 @@ public interface NodeInterface extends VersionedProtocol
      *                      update operation. TRUE will re-open all readers, and
      *                      FALSE will leave everything as is.
      * @param definitionID  The ID of the index.
+     * @param node          The node in which to operate.
      *
      * @return TRUE if the reader is open, FALSE otherwise.
      */
@@ -130,6 +132,7 @@ public interface NodeInterface extends VersionedProtocol
      * This method cleans/deletes up all the files in the kernel index.
      *
      * @param definitionID The ID of the index.
+     * @param node         The node in which to operate.
      *
      * @return TRUE if the files had been deleted, FALSE otherwise.
      */

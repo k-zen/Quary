@@ -28,7 +28,8 @@ package net.apkc.quary.exceptions;
 /**
  * Throws when the Web Server wasn't properly configured.
  *
- * @author K-Zen
+ * @author Andreas P. Koenzen <akc at apkc.net>
+ * @version 0.1
  */
 public class ServerNotConfiguredException extends Exception
 {

@@ -28,7 +28,8 @@ package net.apkc.quary.util;
 /**
  * Utility class for Strings.
  *
- * @author K-Zen
+ * @author Andreas P. Koenzen <akc at apkc.net>
+ * @version 0.1
  */
 public class StringTools
 {

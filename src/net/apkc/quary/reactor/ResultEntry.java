@@ -31,9 +31,9 @@ import io.aime.aimemisc.datamining.Block;
  * A result entry corresponds to an individual result/document matched inside
  * the overall XML result provided to the user.
  *
- * @see Builder Pattern
- *
- * @author K-Zen
+ * @author Andreas P. Koenzen <akc at apkc.net>
+ * @version 0.1
+ * @see <a href="http://en.wikipedia.org/wiki/Builder_pattern">Builder Pattern</a>
  */
 class ResultEntry
 {

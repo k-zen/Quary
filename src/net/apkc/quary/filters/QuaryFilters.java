@@ -36,7 +36,8 @@ import org.apache.hadoop.io.Writable;
  * This class handles the filters passed to search methods of the IndexServer
  * instance.
  *
- * @author K-Zen
+ * @author Andreas P. Koenzen <akc at apkc.net>
+ * @version 0.1
  */
 public class QuaryFilters implements Writable
 {

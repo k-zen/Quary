@@ -41,8 +41,8 @@ import org.apache.lucene.util.Version;
 /**
  * Spanish language text analyzer.
  *
- * @author Andreas P. Koenzen
- * @version 1.0
+ * @author Andreas P. Koenzen <akc at apkc.net>
+ * @version 0.1
  */
 public class SpanishAnalyzer extends QuaryAnalyzer
 {

@@ -32,9 +32,11 @@ package net.apkc.quary.exceptions;
  * <p>
  * Example: When a method of an object is configured as NonOptional but the method
  * hasn't been called for this given object, then the method that checks this object
- * before passing it along for use, will raise this exception.</p>
+ * before passing it along for use, will raise this exception.
+ * </p>
  *
- * @author K-Zen
+ * @author Andreas P. Koenzen <akc at apkc.net>
+ * @version 0.1
  */
 public class ObjectConfigurationException extends Exception
 {

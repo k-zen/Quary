@@ -32,7 +32,8 @@ import java.io.IOException;
 /**
  * Filter that implements a Term query.
  *
- * @author K-Zen
+ * @author Andreas P. Koenzen <akc at apkc.net>
+ * @version 0.1
  */
 public class FieldFilter implements QuaryFilter
 {

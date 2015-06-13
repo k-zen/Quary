@@ -31,8 +31,8 @@ import java.io.ObjectInput;
 /**
  * Serialization utilities.
  *
- * @author Andreas P. Koenzen <akc@apkc.net>
- * @version 1.0
+ * @author Andreas P. Koenzen <akc at apkc.net>
+ * @version 0.1
  */
 public final class SerializationUtils
 {

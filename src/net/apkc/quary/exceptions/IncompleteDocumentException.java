@@ -28,7 +28,8 @@ package net.apkc.quary.exceptions;
 /**
  * Throws when an incomplete document has been sent for indexing.
  *
- * @author K-Zen
+ * @author Andreas P. Koenzen <akc at apkc.net>
+ * @version 0.1
  */
 public class IncompleteDocumentException extends Exception
 {

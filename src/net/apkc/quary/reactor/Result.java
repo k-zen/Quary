@@ -49,7 +49,8 @@ import org.ocpsoft.pretty.time.PrettyTime;
 /**
  * Class for building a result for a given query performed by the user.
  *
- * @author K-Zen
+ * @author Andreas P. Koenzen <akc at apkc.net>
+ * @version 0.1
  */
 public class Result
 {
@@ -179,7 +180,7 @@ public class Result
                 .setLanguage(doc.get("lang"))
                 .setLastModified(doc.get("lastmodified"))
                 .setSegment(doc.get("segment"))
-                .setSummary(getSummary(doc.get("segment"), doc.get("url"), new Text(queryPhrase), new Text(doc.get("lang"))).toString())
+                .setSummary(getSummary(doc.get("segment"), doc.get("url"), new Text(queryPhrase), new Text(doc.get("lang"))))
                 .setTitle(doc.get("title"))
                 .setURL(doc.get("url"));
 

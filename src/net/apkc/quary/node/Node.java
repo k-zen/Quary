@@ -35,6 +35,7 @@ import org.apache.log4j.Logger;
  * This class represents a *Node* component and all its settings.
  *
  * @author Andreas P. Koenzen <akc at apkc.net>
+ * @version 0.1
  */
 public final class Node extends QuaryWritable
 {

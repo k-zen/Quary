@@ -28,9 +28,10 @@ package net.apkc.quary.util;
 import org.apache.hadoop.conf.Configuration;
 
 /**
- * This class handles all the scoring/ranking operations of AIME.
+ * This class handles all the scoring/ranking operations of Quary.
  *
- * @author K-Zen
+ * @author Andreas P. Koenzen <akc at apkc.net>
+ * @version 0.1
  */
 public class Rank
 {

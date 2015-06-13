@@ -32,7 +32,8 @@ package net.apkc.quary.util;
  * normalize(2037.968) -> 0.9211259
  * </pre>
  *
- * @author K-Zen
+ * @author Andreas P. Koenzen <akc at apkc.net>
+ * @version 0.1
  */
 public class Normalizer
 {

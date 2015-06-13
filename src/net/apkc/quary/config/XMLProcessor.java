@@ -57,8 +57,9 @@ import org.xml.sax.SAXParseException;
 /**
  * Custom XML processor for the application.
  *
- * @author Andreas P. Koenzen <akc@apkc.net>
- * @see Singleton Pattern
+ * @author Andreas P. Koenzen <akc at apkc.net>
+ * @version 0.1
+ * @see <a href="http://en.wikipedia.org/wiki/Singleton_pattern">Singleton Pattern</a>
  */
 class XMLProcessor
 {

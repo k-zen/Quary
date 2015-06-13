@@ -50,7 +50,8 @@ import org.apache.log4j.Logger;
  * The *Node Chooser* contains algorithms for choosing in what node a document belongs.
  *
  * @author Andreas P. Koenzen <akc at apkc.net>
- * @see Singleton Pattern
+ * @version 0.1
+ * @see <a href="http://en.wikipedia.org/wiki/Singleton_pattern">Singleton Pattern</a>
  */
 public final class NodeChooser
 {

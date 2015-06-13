@@ -41,8 +41,9 @@ import org.apache.lucene.search.IndexSearcher;
  * This class encapsulates a Lucene index search object alongside some
  * properties.
  *
- * @author K-Zen
- * @see Builder Pattern
+ * @author Andreas P. Koenzen <akc at apkc.net>
+ * @version 0.1
+ * @see <a href="http://en.wikipedia.org/wiki/Builder_pattern">Builder Pattern</a>
  * @see Annotations
  */
 public class Searcher

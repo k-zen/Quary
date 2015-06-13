@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, Andreas P. Koenzen <akc at apkc.net>
+ * Copyright (c) 2014, Andreas P. Koenzen <akc at apkc.net>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

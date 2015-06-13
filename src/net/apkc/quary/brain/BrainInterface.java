@@ -31,8 +31,8 @@ import org.apache.hadoop.ipc.VersionedProtocol;
 /**
  * Interface for Brain.
  *
- * @author Andreas P. Koenzen
- * @version 1.0
+ * @author Andreas P. Koenzen <akc at apkc.net>
+ * @version 0.1
  */
 public interface BrainInterface extends VersionedProtocol
 {
