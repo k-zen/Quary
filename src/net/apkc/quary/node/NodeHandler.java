@@ -53,17 +53,17 @@ import org.apache.log4j.Logger;
  * @version 0.1
  * @see <a href="http://en.wikipedia.org/wiki/Singleton_pattern">Singleton Pattern</a>
  */
-public final class NodeChooser
+public final class NodeHandler
 {
 
-    private static final Logger LOG = Logger.getLogger(NodeChooser.class.getName());
-    private static final NodeChooser INSTANCE = new NodeChooser();
+    private static final Logger LOG = Logger.getLogger(NodeHandler.class.getName());
+    private static final NodeHandler INSTANCE = new NodeHandler();
     private final ArrayList<Node> NODES;
 
     /**
      * Private default constructor.
      */
-    private NodeChooser()
+    private NodeHandler()
     {
         Object data = null;
         try {
@@ -91,7 +91,7 @@ public final class NodeChooser
      *
      * @return The only instance of class.
      */
-    public static final NodeChooser getInstance()
+    public static final NodeHandler getInstance()
     {
         return INSTANCE;
     }

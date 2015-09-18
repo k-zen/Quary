@@ -44,7 +44,7 @@ import net.apkc.quary.docs.QuaryDocument;
 import net.apkc.quary.exceptions.ServerNotConfiguredException;
 import net.apkc.quary.exceptions.ZeroNodesException;
 import net.apkc.quary.node.Node;
-import net.apkc.quary.node.NodeChooser;
+import net.apkc.quary.node.NodeHandler;
 import net.apkc.quary.node.NodeConnection;
 import net.apkc.quary.node.NodeInterface;
 import net.apkc.quary.util.QuaryConfiguration;
@@ -208,7 +208,7 @@ public class Reactor
                 QuaryDocument doc = XMLBuilder.parseExternalDocumentToQuaryDocument(document);
 
                 try {
-                    Node node = NodeChooser.getInstance().getNode();
+                    Node node = NodeHandler.getInstance().getNode();
                     NodeInterface conn = NodeConnection.getConnection(node);
                     conn.openWriter(CONF, doc.getDefinitionID(), node);
                     conn.write(new Text(doc.getSignature()), doc, IndexDefinitionDB.getInstance().getDefinition(doc.getDefinitionID()), 0L);

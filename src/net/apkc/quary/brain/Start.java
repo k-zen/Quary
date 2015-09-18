@@ -30,7 +30,7 @@ import net.apkc.emma.tasks.TasksHandler;
 import net.apkc.quary.config.XMLBuilder;
 import net.apkc.quary.definitions.index.IndexDefinitionDB;
 import net.apkc.quary.exceptions.ServerNotConfiguredException;
-import net.apkc.quary.node.NodeChooser;
+import net.apkc.quary.node.NodeHandler;
 import net.apkc.quary.reactor.Reactor;
 import net.apkc.quary.util.Constants;
 import net.apkc.quary.util.QuaryConfiguration;
@@ -114,7 +114,7 @@ public class Start
             @Override
             public void run()
             {
-                TasksHandler.getInstance().submitInfiniteTask(NodeChooser.getInstance().new Ping());
+                TasksHandler.getInstance().submitInfiniteTask(NodeHandler.getInstance().new Ping());
             }
         }.start();
     }

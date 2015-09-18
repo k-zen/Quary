@@ -27,7 +27,7 @@ package net.apkc.quary.brain;
 
 import java.io.IOException;
 import net.apkc.quary.node.Node;
-import net.apkc.quary.node.NodeChooser;
+import net.apkc.quary.node.NodeHandler;
 import org.apache.hadoop.ipc.ProtocolSignature;
 
 public class BrainImplementation implements BrainInterface
@@ -48,7 +48,7 @@ public class BrainImplementation implements BrainInterface
     @Override
     public void registerNode(Node newNode)
     {
-        NodeChooser.getInstance().addNode(newNode);
+        NodeHandler.getInstance().addNode(newNode);
     }
 
     @Override
